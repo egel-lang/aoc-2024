@@ -1,0 +1,22 @@
+# Advent of Code (AoC) - day 1, task 2
+
+import "prelude.eg"
+using System, OS, List
+
+def input =
+    let L = read_line stdin in if eof stdin then {} else {L | input}
+
+def parse = 
+    let D = Regex::compile "[0-9]+" in do Regex::matches D |> map to_int
+
+def order =
+    [ DD -> (map head DD, sort (map last DD)) ]
+
+def count =
+    foldl [D N -> Dict::set D N (if Dict::has D N then 1 + Dict::get D N else 1)] Dict::dict
+
+def tally =
+    [(D0, D1) -> let C = count D1 in zip D0 (map (Dict::nth_with_default 0 C) D0) ]
+
+def main =
+    input |> map parse |> order |> tally |> map (uncurry (*)) |> sum
