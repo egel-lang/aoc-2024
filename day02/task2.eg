@@ -14,7 +14,7 @@ def safe =
     [ XX ->
     [ XX -> and (all [X -> X <= 3] (map abs0 XX)) 
             (or (all [X -> X < 0] XX) (all [X -> X > 0] XX)) ]
-            (zip XX (tail XX) |> map (uncurry (-))) ]
+            (zip_with (-) XX (tail XX)) ]
 
 def dampened =
     [ XX -> zip_with (++) (inits XX) (tail (tails XX)) ]
