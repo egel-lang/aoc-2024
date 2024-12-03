@@ -8,8 +8,7 @@ def input =
     let L = read_line stdin in if eof stdin then {} else {L | input}
 
 def parse = 
-    #do Regex::matches (Regex::compile "mul([0-9][0-9]?[0-9]?)")
-    do Regex::matches (Regex::compile "mul\\([0-9][0-9]?[0-9]?,[0-9][0-9]?[0-9]?\\)")
+    do Regex::matches (Regex::compile "mul\\([0-9]+,[0-9]+\\)")
 
 def args =
     do map (do Regex::matches (Regex::compile "[0-9]+") |> map to_int)
