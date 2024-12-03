@@ -8,11 +8,7 @@ def input =
     let L = read_line stdin in if eof stdin then {} else {L | input}
 
 def parse = 
-    let D = Regex::compile "[0-9]+" in
-    do Regex::matches D |> map to_int
-
-def order =
-    [ DD -> zip (sort (map head DD)) (sort (map last DD)) ]
+    do Regex::matches (Regex::compile "[0-9]+") |> map to_int
 
 def main =
-    input |> map parse |> order |> map (uncurry (-)) |> map abs0 |> sum
+    input |> map parse |> transpose |> map sort |> reduce zip |> map (uncurry (-)) |> map abs0 |> sum
