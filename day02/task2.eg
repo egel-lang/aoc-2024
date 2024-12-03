@@ -12,8 +12,7 @@ def parse =
 
 def safe =
     [ XX ->
-    [ XX -> and (all [X -> X <= 3] (map abs0 XX)) 
-            (or (all [X -> X < 0] XX) (all [X -> X > 0] XX)) ]
+    [ XX -> or (all (flip elem {-1,-2,-3}) XX) (all (flip elem {1,2,3}) XX) ] 
             (zip_with (-) XX (tail XX)) ]
 
 def dampened =
