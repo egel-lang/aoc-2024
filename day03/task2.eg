@@ -1,0 +1,24 @@
+# Advent of Code (AoC) - day 3, task 2
+
+import "prelude.eg"
+
+using System, OS, List
+
+def input =
+    let L = read_line stdin in if eof stdin then {} else {L | input}
+
+def parse = 
+    do Regex::matches (Regex::compile "mul\\([0-9]+,[0-9]+\\)|do(n't)?\\(\\)")
+
+def args =
+    do Regex::matches (Regex::compile "[0-9]+") |> map to_int
+
+def calc =
+    [ _ {}             -> 0
+    | _ {"don't()"|XX} -> calc false XX
+    | _ {"do()"|XX}    -> calc true XX
+    | true {X|XX}      -> product (args X) + calc true XX 
+    | false {X|XX}     -> calc false XX ]
+    
+def main =
+    input |> foldl (+) "" |> parse |> calc true
