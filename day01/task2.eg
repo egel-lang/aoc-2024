@@ -9,11 +9,8 @@ def input =
 def parse = 
     do Regex::matches (Regex::compile "[0-9]+") |> map to_int
 
-def order = 
-    do transpose |> map sort
-
 def tally =
-    do map [D -> Dict::count D] |> reduce Dict::inner_join |> Dict::to_list
+    do map Dict::count |> reduce Dict::inner_join |> Dict::to_list
 
 def main =
-    input |> map parse |> order |> tally |> map [(X,(Y,Z)) -> X*Y*Z] |> sum
+    input |> map parse |> transpose |> tally |> map [(X,(Y,Z)) -> X*Y*Z] |> sum
