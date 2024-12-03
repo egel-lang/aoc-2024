@@ -7,7 +7,7 @@ def input =
     let L = read_line stdin in if eof stdin then {} else {L | input}
 
 def parse = 
-    let D = Regex::compile "[0-9]+" in do Regex::matches D |> map to_int
+    do Regex::matches (Regex::compile "[0-9]+") |> map to_int
 
 def order = 
     do transpose |> map sort
