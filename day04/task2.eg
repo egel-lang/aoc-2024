@@ -1,0 +1,15 @@
+# Advent of Code (AoC) - day 4, task 2
+
+import "prelude.eg"
+
+using System, OS, List, String (to_chars, from_chars)
+
+def star = {(-1, -1), (0,0), (1, 1), (1, -1), (0,0), (-1,1)}
+
+def words = 
+    [D -> map [P -> map (add P) star] (Dict::keys D) |> map (map (Dict::nth_with_default '.' D))]
+
+def main =
+    read_lines stdin |> map to_chars |> Dict::from_lists |> words |> map from_chars
+    |> filter (flip elem {"MASMAS", "MASSAM", "SAMMAS", "SAMSAM"}) |> length
+
