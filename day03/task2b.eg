@@ -13,9 +13,6 @@ def parse =
 def args =
     do Regex::matches (Regex::compile "[0-9]+") |> map to_int
 
-def foldl_state =
-    [F S Z XX -> foldl (uncurry F) (S,Z) XX |> snd ] 
-
 def calc =
     foldl_state
     [ _ N "don't()" -> (false, N)
