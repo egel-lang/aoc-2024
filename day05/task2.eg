@@ -14,6 +14,6 @@ def ordered_by =
     [P -> do tails |> init |> all (ap (all . P . head) tail) ]
 
 def main =
-    read_lines stdin |> map parse |> span (do length |> ((==) 2))
-    |> [(PP,YY) -> filter (do ordered_by (order PP) |> not) (tail YY) |> map (sort_by (order PP))]
-    |> map [XX -> nth ((length XX) / 2) XX] |> sum
+    read_lines stdin |> map parse |> span (do length |> ((==) 2)) |> proj_update 1 tail
+    |> [(PP,XX) -> filter (do ordered_by (order PP) |> not) XX |> map (sort_by (order PP))]
+    |> map (join (nth . flip (/) 2 . length)) |> sum
