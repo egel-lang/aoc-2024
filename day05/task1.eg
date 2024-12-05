@@ -1,0 +1,23 @@
+# Advent of Code (AoC) - day 5, task 1
+
+import "prelude.eg"
+
+using System, OS, List, String (to_chars)
+
+def parse = 
+    do Regex::matches (Regex::compile "[0-9]+") |> map to_int
+
+def smaller =
+    [P0 P1 Q0 Q1 -> not (and (P0 == Q1) (P1 == Q0))]
+
+def order =
+    foldl [PP {P0,P1} -> [Q0 Q1 -> smaller P0 P1 Q0 Q1 && [_ -> PP Q0 Q1]]] [_ _ -> true]
+
+def ordered_by =
+    [PP {} -> true
+    |PP {X|XX} -> (all (PP X) XX) && [_ -> ordered_by PP XX]]
+
+def main =
+    read_lines stdin |> map parse |> span (do length |> ((==) 2))
+    |> [(PP,YY) -> filter (ordered_by (order PP)) (tail YY)]
+    |> map [XX -> nth ((length XX) / 2) XX] |> sum

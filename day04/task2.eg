@@ -4,7 +4,7 @@ import "prelude.eg"
 
 using System, OS, List, String (to_chars, from_chars)
 
-def star = {(-1, -1), (0,0), (1, 1), (1, -1), (0,0), (-1,1)}
+val star = {(-1, -1), (0,0), (1, 1), (1, -1), (0,0), (-1,1)}
 
 def words = 
     [D -> map (flip map star . add) (Dict::keys D) |> map (map (Dict::nth_with_default '.' D))]
