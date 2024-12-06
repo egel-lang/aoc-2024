@@ -1,4 +1,4 @@
-# Advent of Code (AoC) - day 4, task 1
+# Advent of Code (AoC) - day 6, task 2
 
 import "prelude.eg"
 import "generator.eg"
@@ -19,7 +19,7 @@ def track =
 def loops =
     [D -> let V = Dict::dict in iter_while
         [(P,N) -> Dict::set V (P,N) 0; [Q -> if Dict::has D Q && [_ -> Dict::get D Q == '#'] then (P,(N+1)%4) else (Q,N)] (add (nth N dirs) P)]
-        [(P,N) -> and (not (Dict::has V (P,N))) (Dict::has D (add (nth N dirs) P))] 
+        [(P,N) -> and (not (Dict::has V (P,N))) (Dict::has D P)] 
         (start_pos D,0) |> Dict::has V]
 
 def solve =
