@@ -1,0 +1,31 @@
+# Advent of Code (AoC) - day 4, task 1
+
+import "prelude.eg"
+import "generator.eg"
+
+using System, OS, List, String (to_chars, from_chars)
+
+def dirs = {(-1, 0), (0, 1), (1, 0), (0,-1)}
+
+def start_pos = 
+    [D -> foldl [P0 P1 -> if Dict::get D P1 == '^' then P1 else P0] (0,0) (Dict::keys D)]
+
+def track =
+    [D -> trace_while 
+        [(P,N) -> [Q -> if Dict::has D Q && [_ -> Dict::get D Q == '#'] then (P,(N+1)%4) else (Q,N)] (add (nth N dirs) P)]
+        [(P,N) -> Dict::has D P] 
+        (start_pos D,0) ]
+
+def loops =
+    [D -> let V = Dict::dict in iter_while
+        [(P,N) -> Dict::set V (P,N) 0; [Q -> if Dict::has D Q && [_ -> Dict::get D Q == '#'] then (P,(N+1)%4) else (Q,N)] (add (nth N dirs) P)]
+        [(P,N) -> and (not (Dict::has V (P,N))) (Dict::has D (add (nth N dirs) P))] 
+        (start_pos D,0) |> Dict::has V]
+
+def solve =
+    [D -> foldl [N P -> if loops (Dict::set (Dict::copy D) P '#') then printf "{} {}\n" N P; N+1 else N] 0 
+          (map fst (track D) |> tail |> unique)]
+      
+def main =
+    read_lines stdin |> map to_chars |> Dict::from_lists |> solve
+
