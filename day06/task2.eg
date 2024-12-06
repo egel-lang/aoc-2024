@@ -1,7 +1,6 @@
 # Advent of Code (AoC) - day 6, task 2
 
 import "prelude.eg"
-import "generator.eg"
 
 using System, OS, List, String (to_chars, from_chars)
 
