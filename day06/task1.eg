@@ -11,8 +11,8 @@ def start_pos =
 
 def track =
     [D -> trace_while 
-        [(P,N) -> [Q -> if Dict::has D Q && [_ -> Dict::get D Q == '#'] then (P,(N+1)%4) else (Q,N)] (add (nth N dirs) P)]
         [(P,N) -> Dict::has D P] 
+        [(P,N) -> [Q -> if Dict::has D Q && [_ -> Dict::get D Q == '#'] then (P,(N+1)%4) else (Q,N)] (add (nth N dirs) P)]
         (start_pos D,0) ]
 
 def main =
