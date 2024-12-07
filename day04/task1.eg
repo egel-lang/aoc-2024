@@ -10,7 +10,7 @@ def dirs = {(-1, -1), (-1, 0), (-1, 1), (0,-1), (0,1), (1, -1), (1,0), (1,1)}
 val dirs4 = map [P -> iter 3 [PP -> {add P (head PP)|PP}] {(0,0)} ] dirs 
 
 def words = 
-    [D -> flatmap [P -> map (map (add P)) dirs4] (Dict::keys D) |>  (map (map (Dict::nth_with_default '.' D)))]
+    [D -> flatmap [P -> map (map (add P)) dirs4] (Dict::keys D) |>  (map (map (Dict::get_with_default '.' D)))]
 
 def main =
     read_lines stdin |> map to_chars |> Dict::from_lists |> words |> map from_chars |> filter ((==) "XMAS") |> length
