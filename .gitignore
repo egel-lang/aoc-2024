@@ -1,0 +1,3 @@
+# ignore all inputs and possible cheats
+*.txt
+*.py
