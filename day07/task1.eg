@@ -1,0 +1,15 @@
+# Advent of Code (AoC) - day 7, task 1
+
+import "prelude.eg"
+
+using System, OS, List, String (to_chars)
+
+def parse = 
+    do Regex::matches (Regex::compile "[0-9]+") |> map to_int
+
+def solutions =
+    foldl [{} Y -> {Y} |XX Y -> map ((*) Y) XX ++ map ((+) Y) XX] {}
+
+def main =
+    read_lines stdin |> map parse |> map [XX -> (head XX, solutions (tail XX))] 
+    |> filter [(X,XX) -> (filter ((==) X) XX) /= {}] |> map fst |> sum
