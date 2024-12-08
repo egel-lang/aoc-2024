@@ -1,0 +1,29 @@
+# Advent of Code (AoC) - day 8, task 1
+
+import "prelude.eg"
+
+using System, OS, List, String (to_chars, from_chars)
+
+def dirs = {(-1, 0), (0, 1), (1, 0), (0,-1)}
+
+def sub = [(X0,Y0) (X1,Y1) -> (X0-X1,Y0-Y1)]
+
+def antennas =
+    do Dict::to_list |> filter [(_,'.') -> false | _ -> true]
+
+def combs =
+    [{} -> {}
+    |{X|XX} -> map [Y -> (X,Y)] XX ++ combs XX]
+
+def antinodes =
+    do combs
+       |> filter [((P0,A0),(P1,A1)) -> (A0 == A1) && [_ -> P0 /= P1]]
+       |> foldl [AA ((P0, A0),(P1,A1)) -> [V -> {add V P0, add (mul -1 V) P1|AA}] (sub P0 P1)] {}
+       |> unique
+
+
+def main =
+    read_lines stdin |> map to_chars |> Dict::from_lists 
+    |> [ D -> D |> antennas |> antinodes |> filter [P -> Dict::has D P] ]
+    |> length
+

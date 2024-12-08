@@ -1,0 +1,25 @@
+# Advent of Code (AoC) - day 8, task 2
+
+import "prelude.eg"
+
+using System, OS, List, String (to_chars, from_chars)
+
+def antennas =
+    do Dict::to_list |> filter [(_,'.') -> false | _ -> true]
+
+def combs =
+    do fix [F {} -> {} |F {X|XX} -> map [Y -> (X,Y)] XX ++ F XX]
+       |> filter [((P0,A0),(P1,A1)) -> (A0 == A1)]
+
+def cast =
+    [D P V -> if Dict::has D P then {P|cast D (add P V) V} else {}]
+
+def antinodes =
+    [ D -> do combs
+       |> foldl [AA ((P0, A0),(P1,A1)) -> cast D P0 (sub P0 P1) ++ cast D P0 (sub P1 P0) ++ AA] {}
+       |> unique ]
+
+def main =
+    read_lines stdin |> map to_chars |> Dict::from_lists 
+    |> [ D -> antennas D |> antinodes D ]
+    |> length
