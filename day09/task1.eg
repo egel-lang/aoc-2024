@@ -1,0 +1,26 @@
+# Advent of Code (AoC) - day 9, task 1
+
+import "prelude.eg"
+
+using System, OS, List, String (to_chars, from_chars)
+
+def to_fs =
+    do foldl [(0, N, XX) X -> (1, N+1, repeat X N ++ XX)
+             |(1, N, XX) X -> (0, N, repeat X none ++ XX)] (0,0,{})
+    |> proj 2 |> reverse
+
+def place =
+    [XX {} -> XX
+    |{none|XX} {Y|YY} -> {Y|place XX YY}
+    |{X|XX} YY -> {X|place XX YY}]
+
+def compact =
+    [XX ->
+         place XX (split ((==) none) (reverse XX) |> uncurry (zip_with [X Y -> Y])) 
+         |> take (length (filter ((/=) none) XX))]
+
+def main =
+    read_line stdin |> to_chars |> map to_int
+    |> to_fs |> compact
+    |> [XX -> zip_with (*) XX (from_to 0 (length XX))] |> sum
+

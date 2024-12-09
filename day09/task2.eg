@@ -1,0 +1,27 @@
+# Advent of Code (AoC) - day 9, task 2
+
+import "prelude.eg"
+
+using System, OS, List, String (to_chars, from_chars)
+
+def to_fs =
+    do foldl_state [(0, N) XX X -> ((1, N+1), {(X, N)|XX})
+                   |(1, N) XX X -> ((0, N), {(X, none)|XX})] (0,0) {}
+       |> reverse
+
+def wipe =
+    [X {} -> {}
+    |X {(N,Y)|XX} -> if X == Y then {(N,none)|XX} else {(N,Y)|wipe X XX}]
+
+def place = 
+    [(N0,X) {(N1,none)|XX} -> if N0 <= N1 then {(N0,X),(N1-N0,none)|wipe X XX} else {(N1,none)|place (N0,X) XX}
+    |(N0,X) {(N1,Y)|XX} -> if X == Y then {(N1,Y)|XX} else {(N1,Y)|place (N0,X) XX}]
+
+def compact =
+    [XX -> foldl [XX (_,none) -> XX|XX F -> print F "\n"; place F XX] XX (reverse XX)]
+
+def main =
+    read_line stdin |> to_chars |> map to_int
+    |> to_fs |> compact 
+    |> foldl_state [N M (L,none) -> (N+L,M)|N M (L,F) -> (N+L, M + sum(zip_with (*) (repeat L F) (from_to N (N+L))))] 0 0
+
