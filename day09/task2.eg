@@ -10,11 +10,11 @@ def to_fs =
        |> reverse
 
 def wipe =
-    [X {(N,Y)|XX} -> if X == Y then {(N,none)|XX} else {(N,Y)|wipe X XX}]
+    [I {(J,Y)|XX} -> if I == Y then {(J,none)|XX} else {(J,Y)|wipe I XX}]
 
 def place = 
-    [(N0,X) {(N1,none)|XX} -> if N0 <= N1 then {(N0,X),(N1-N0,none)|wipe X XX} else {(N1,none)|place (N0,X) XX}
-    |(N0,X) {(N1,Y)|XX} -> if X == Y then {(N1,Y)|XX} else {(N1,Y)|place (N0,X) XX}]
+    [(I,X) {(J,none)|XX} -> if I <= J then {(I,X),(J-I,none)|wipe X XX} else {(J,none)|place (I,X) XX}
+    |(I,X) {(J,Y)|XX} -> if X == Y then {(J,Y)|XX} else {(J,Y)|place (I,X) XX}]
 
 def compact =
     [XX -> foldl [XX (_,none) -> XX|XX F -> place F XX] XX (reverse XX)]
