@@ -24,6 +24,5 @@ def main =
     read_line stdin |> to_chars |> map to_int
     |> to_fs |> compact 
     |> foldl_state [N M (L,none) -> (N+L,M)|N M (L,F) -> (N+L, M + F*((N+L)*(N+L- 1)/2-(N*(N- 1))/2))] 0 0
-    #|> foldl_state [N M (L,none) -> (N+L,M)|N M (L,F) -> (N+L, M + F*(((N+L)*(N+L- 1)-(N*(N- 1)))/2))] 0 0
     #|> foldl_state [N M (L,none) -> (N+L,M)|N M (L,F) -> (N+L, M + sum(zip_with (*) (repeat L F) (from_to N (N+L))))] 0 0
 
