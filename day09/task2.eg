@@ -10,8 +10,7 @@ def to_fs =
        |> reverse
 
 def wipe =
-    [X {} -> {}
-    |X {(N,Y)|XX} -> if X == Y then {(N,none)|XX} else {(N,Y)|wipe X XX}]
+    [X {(N,Y)|XX} -> if X == Y then {(N,none)|XX} else {(N,Y)|wipe X XX}]
 
 def place = 
     [(N0,X) {(N1,none)|XX} -> if N0 <= N1 then {(N0,X),(N1-N0,none)|wipe X XX} else {(N1,none)|place (N0,X) XX}
