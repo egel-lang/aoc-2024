@@ -9,11 +9,11 @@ def dirs = {(-1,0),(1,0),(0,-1),(0,1)}
 def start = do Dict::to_list |> filter (do snd |> ((==)0)) |> map fst
 
 def trails =
-    [D TT -> flatmap [PP -> 
+    [D -> flatmap [PP -> 
         if Dict::get D (head PP) == 9 then {PP}
         else map (add (head PP)) dirs |> map (flip cons PP) 
             |> filter [{P,Q|PP} -> Dict::get_with_default 0 D P == (Dict::get D Q) + 1]
-            |> trails D] TT]
+            |> trails D] ]
 
 def main =
     read_lines stdin |> map (map to_int . to_chars) |> Dict::from_lists
