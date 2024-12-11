@@ -1,0 +1,19 @@
+# Advent of Code (AoC) - day 11, task 2
+
+import "prelude.eg"
+
+using System, OS, List, String (count, sp = split, split_pattern)
+
+def rule = 
+    [0 -> {1}
+    |N -> let S = to_text N in 
+        if (count S)%2 == 0 then 
+            sp ((count S)/2) S |> tuple_to_list |> map to_int
+        else {N*2024}]
+
+def blink =
+    do Dict::to_list |> foldl [D (S,N) -> rule S |> map [S -> Dict::set_with D [M V ->N+M] S N]; D] Dict::dict
+
+def main =
+    read_line stdin |> split_pattern " " |> map to_int |> Dict::count
+    |> iter 75 blink |> Dict::to_list |> map snd |> sum
