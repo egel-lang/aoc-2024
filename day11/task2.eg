@@ -8,7 +8,7 @@ def rule =
     [0 -> {1}
     |N -> let S = to_text N in 
         if (count S)%2 == 0 then 
-            sp ((count S)/2) S |> [(S0,S1) -> {to_int S0, to_int S1}]  
+            sp ((count S)/2) S |> tuple_to_list |> map to_int
         else {N*2024}]
 
 def blink =
@@ -18,5 +18,3 @@ def blink =
 def main =
     read_line stdin |> split_pattern " " |> map to_int 
     |> map (tuple 75) |> map (blink Dict::dict) |> sum
-    
-

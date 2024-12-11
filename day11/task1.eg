@@ -14,4 +14,3 @@ def blink = flatmap
 def main =
     read_line stdin |> split_pattern " " |> map to_int 
     |> iter 25 blink |> length
-    
