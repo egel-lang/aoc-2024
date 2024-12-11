@@ -11,8 +11,8 @@ def rule =
         else {N*2024}]
 
 def blink =
-    do D::to_list |> flatmap [(S,N) -> rule S |> map (flip tuple N)] |> D::from_list_with (+)
+    do flatmap [(S,N) -> rule S |> map (flip tuple N)] |> D::from_list_with (+) |> D::to_list
 
 def main =
-    read_line stdin |> split_pattern " " |> map to_int |> D::count
-    |> iter 75 blink |> D::to_list |> map snd |> sum
+    read_line stdin |> split_pattern " " |> map to_int |> map (flip tuple 1)
+    |> iter 75 blink |> map snd |> sum
