@@ -2,13 +2,12 @@
 
 import "prelude.eg"
 
-using System, OS, List, String (count, sp = split, split_pattern), D = Dict
+using System, OS, List, String (len=count, sp=split, split_pattern), D = Dict
 
 def rule = 
     [0 -> {1}
     |N -> let S = to_text N in 
-        if (count S)%2 == 0 then 
-            sp ((count S)/2) S |> tuple_to_list |> map to_int
+        if (len S)%2 == 0 then sp ((len S)/2) S |> tuple_to_list |> map to_int
         else {N*2024}]
 
 def blink =
