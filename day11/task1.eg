@@ -1,0 +1,17 @@
+# Advent of Code (AoC) - day 11, task 1
+
+import "prelude.eg"
+
+using System, OS, List, String (count, sp = split, split_pattern)
+
+def blink = flatmap
+    [0 -> {1}
+    |N -> let S = to_text N in 
+        if (count S)%2 == 0 then 
+            sp ((count S)/2) S |> [(S0,S1) -> {to_int S0, to_int S1}]  
+        else {N*2024}]
+
+def main =
+    read_line stdin |> split_pattern " " |> map to_int 
+    |> iter 25 blink |> length
+    
