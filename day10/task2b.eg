@@ -10,7 +10,7 @@ def starts = do Dict::to_list |> filter (do snd |> ((==)'0')) |> map fst |> map 
 
 def trails =
     [D -> iter 9 (flatmap [PP -> map (add (head PP)) dirs |> map (flip cons PP)
-            |> filter [{P,Q|PP} -> Dict::get_with_default '0' D P == succ (Dict::get D Q)]])]
+            |> filter [{P,Q|PP} -> Dict::get_safe D P == succ (Dict::get D Q)]])]
 
 def main =
     read_lines stdin |> map to_chars |> Dict::from_lists
