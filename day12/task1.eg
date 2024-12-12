@@ -1,0 +1,30 @@
+# Advent of Code (AoC) - day 12, task 1
+
+import "prelude.eg"
+
+using System, OS, List, String (to_chars), D = Dict
+
+def ifix =
+    [F X -> let Y = F X in printf "!!X:{}\n!!Y:{}\n" X Y; if Y == X then X else ifix F Y]
+
+def dirs = {(-1,0),(1,0),(0,-1),(0,1)}
+
+def regions0 =
+    [D C PP {} RR -> (PP, RR)
+    |D C PP QQ RR -> 
+        printf "regions0 {}\n" (length RR);
+        let QQ = flatmap [P -> map (add P) QQ] dirs |> unique |> filter (D::has D) in
+        let (PP0, RR) = split [P -> (D::get D P == C) && [_ -> elem P QQ]] RR in
+            regions0 D C (PP0++PP) PP0 RR ]
+
+def regions =
+    [D {} -> {}
+    |D {P|PP} -> [(PP,QQ) -> {PP|regions D QQ}] (regions0 D (D::get D P) {P} {P} PP)]
+        
+def perimeter =
+    [D PP -> filter (flip not_elem PP) (flatmap [P -> map (add P) dirs] PP)]
+
+def main =
+    read_lines stdin |> map to_chars |> D::from_lists
+    |> [D -> regions D (D::keys D) |> map [PP -> (PP, perimeter D PP)]]
+    |> map [(PP0,PP1) -> (length PP0) * (length PP1)] |> sum
