@@ -1,4 +1,4 @@
-# Advent of Code (AoC) - day 12, task 1
+# Advent of Code (AoC) - day 12, task 2
 
 import "prelude.eg"
 
@@ -20,7 +20,13 @@ def regions =
 def perimeter =
     [D PP -> filter (flip not_elem PP) (flatmap [P -> map (add P) dirs] PP)]
 
+def sides0 =
+    [PP -> map (flip tuple 0) PP |> D::from_list |> [D -> regions D PP]]
+
+def sides =
+    [PP -> flatmap [P -> map (add P) PP |> filter (flip not_elem PP) |> sides0] dirs]
+
 def main =
     read_lines stdin |> map to_chars |> D::from_lists
-    |> [D -> regions D (D::keys D) |> map [PP -> (PP, perimeter D PP)]]
+    |> [D -> regions D (D::keys D) |> map [PP -> (PP, sides PP)]]
     |> map [(PP0,PP1) -> (length PP0) * (length PP1)] |> sum
