@@ -11,8 +11,7 @@ def solve =
         let (PX,PY) = add O (PX,PY) in
         let M = ((PX * BY) - (PY * BX)) / ((AX * BY) - (AY * BX)) in
         let N = (PY - AY * M) / BY in
-        if (M * (AX * BY - AY * BX) == (PX * BY - PY * BX)) && [_ -> N * BY == (PY - AY * M)]
-        then (M,N) else none]
+        if (PX,PY) == add (mul M (AX,AY)) (mul N (BX,BY)) then (M,N) else none]
 
 def main =
     read_lines stdin |> map parse |> split_on tuple 
