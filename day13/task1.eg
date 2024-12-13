@@ -1,0 +1,19 @@
+# Advent of Code (AoC) - day 13, task 1
+
+import "prelude.eg"
+
+using System, OS, List, String (to_chars, from_chars)
+
+def parse = do Regex::matches (Regex::compile "[0-9]+") |> map to_int |> list_to_tuple
+
+def solve =
+    [{(AX,AY), (BX,BY), (PX,PY)} ->
+        let M = ((PX * BY) - (PY * BX)) / ((AX * BY) - (AY * BX)) in
+        let N = (PY - AY * M) / BY in
+        if (M * (AX * BY - AY * BX) == (PX * BY - PY * BX)) && [_ -> N * BY == (PY - AY * M)]
+        then (M,N) else none]
+
+def main =
+    read_lines stdin |> map parse |> split_on tuple |> map solve
+    |> filter ((/=) none) |> map [(M,N) -> 3 * M + N] |> sum
+
