@@ -1,0 +1,29 @@
+# Advent of Code (AoC) - day 14, task 1
+
+import "prelude.eg"
+
+using System, OS, List, String (to_chars, from_chars)
+
+def parse = do Regex::matches (Regex::compile "-?[0-9]+") |> map to_int
+            |> chunks 2 |> map list_to_tuple |> list_to_tuple
+
+def size = (101,103)
+
+def walk = [N (P,V) -> add P (mul N V)]
+
+def mod = [N M -> ((N%M)+M)%M]
+
+def clip = [(BX, BY) (PX,PY) -> (mod PX BX, mod PY BY)]
+
+def quadrants = [(BX,BY) PP -> 
+        {filter [(PX,PY) -> and (PX < (BX/2)) (PY < (BY/2))] PP,
+         filter [(PX,PY) -> and (PX < (BX/2)) (PY > (BY/2))] PP,
+         filter [(PX,PY) -> and (PX > (BX/2)) (PY < (BY/2))] PP,
+         filter [(PX,PY) -> and (PX > (BX/2)) (PY > (BY/2))] PP} ]
+
+def main =
+    read_lines stdin |> map parse 
+    |> map (walk 100) |> map (clip size) |> sort
+    |> quadrants size
+    |> map length |> product
+
