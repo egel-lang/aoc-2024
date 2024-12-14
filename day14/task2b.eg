@@ -21,8 +21,7 @@ def quadrants = [(BX,BY) PP ->
 
 def main =
     read_lines stdin |> map parse 
-    |> [PP -> map [N -> print N "\n"; (map (walk N) PP, N)] (from_to 0 (uncurry (*) size))]
-    #|> [PP -> map [N -> (map (walk N) PP, N)] (from_to 0 2)]
+    |> [PP -> map [N -> (map (walk N) PP, N)] (from_to 0 (uncurry (*) size))]
     |> map (proj_update 0 (product . map length . quadrants size))
     |> reduce [(I,N) (J,M) -> if I < J then (I,N) else (J,M)]
     |> snd
