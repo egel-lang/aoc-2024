@@ -15,29 +15,22 @@ def start = do D::to_list |> filter ((==) '@' . snd) |> head |> fst
 def cat = [F G -> let XX = F none in if XX == none then XX else
                   let YY = G none in if YY == none then YY else XX ++ YY]
 
-def ahead = 
-    [D P V -> let Q = add P V in 
-        [(_,0) '[' -> cat [_ -> {Q, add (0,1) Q}] [_ -> cat [_ -> ahead D Q V] [_ -> ahead D (add (0,1) Q) V]]
-        |(_,0) ']' -> cat [_ -> {Q, add (0,-1) Q}] [_ -> cat [_ -> ahead D Q V] [_ -> ahead D (add (0,-1) Q) V]]
-        |(0,_) '[' -> cat [_ -> {Q, add (0,1) Q}] [_ -> ahead D (add (0,1) Q) V]
-        |(0,_) ']' -> cat [_ -> {Q, add (0,-1) Q}] [_ -> ahead D (add (0,-1) Q) V]
-        |_     '#' -> none
-        |_     _   -> {}] V (D::get D Q)]
+def ahead = [D P V -> let Q = add P V in 
+    [(_,0) '[' -> cat [_ -> {Q, add (0,1) Q}] [_ -> cat [_ -> ahead D Q V] [_ -> ahead D (add (0,1) Q) V]]
+    |(_,0) ']' -> cat [_ -> {Q, add (0,-1) Q}] [_ -> cat [_ -> ahead D Q V] [_ -> ahead D (add (0,-1) Q) V]]
+    |(0,_) '[' -> cat [_ -> {Q, add (0,1) Q}] [_ -> ahead D (add (0,1) Q) V]
+    |(0,_) ']' -> cat [_ -> {Q, add (0,-1) Q}] [_ -> ahead D (add (0,-1) Q) V]
+    |_     '#' -> none
+    |_     _   -> {}] V (D::get D Q)]
 
-def shove = [D PP V -> let C = foldl [D P -> D::set D P '.'] (D::copy D) PP in
-                       foldl [C P -> D::set C (add P V) (D::get D P)] C PP]  
+def shove = 
+    [D PP V -> let C = foldl [D P -> D::set D P '.'] (D::copy D) PP in
+               foldl [C P -> D::set C (add P V) (D::get D P)] C PP]  
 
 def step = [D P V -> [none -> (D,P)|PP -> (shove (shove D PP V) {P} V, add P V)] (ahead D P V)]
 
-def steps = [D P VV -> foldl [(D,P) V -> print P "\n";step D P V] (D,P) VV |> fst]
-
-def size = do D::keys |> reduce [P Q -> if P < Q then Q else P]
-
-def debug =
-    [D -> [(X,Y) -> map [X -> map [Y -> print (D::get D (X,Y))] (from_to 0 Y); print "\n"] (from_to 0 X); none] (size D)] 
-
 def main =
     read_lines stdin |> parse |> [(XX,VV) ->(D::from_lists (map expand XX), map dir VV)]
-    |> [(D,VV) -> steps D (start D) VV]
+    |> [(D,VV) -> foldl [(D,P) V -> print P "\n"; step D P V] (D, start D) VV] |> fst
     |> D::to_list |> foldl [N ((X,Y),'[') -> N + 100 * X + Y |N _ -> N] 0
 
