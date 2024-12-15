@@ -14,19 +14,20 @@ def start = do D::to_list |> filter ((==) '@' . snd) |> head |> fst
 
 def cat = [none F -> none | XX F -> [none -> none| YY -> XX++YY] (F none)]
 
-def ahead = [D P V -> let Q = add P V in 
-    [(_,0) '[' -> cat {Q, add (0,1) Q} [_ -> cat (ahead D Q V) [_ -> ahead D (add (0,1) Q) V]]
-    |(_,0) ']' -> cat {Q, add (0,-1) Q} [_ -> cat (ahead D Q V) [_ -> ahead D (add (0,-1) Q) V]]
-    |(0,_) '[' -> cat {Q, add (0,1) Q} [_ -> ahead D (add (0,1) Q) V]
-    |(0,_) ']' -> cat {Q, add (0,-1) Q} [_ -> ahead D (add (0,-1) Q) V]
-    |_     '#' -> none
-    |_     _   -> {}] V (D::get D Q)]
+def region = [D P V -> let Q = add P V in
+    [(_,0) '[' -> cat {P, add (0,1) P} [_ -> cat (region D Q V) [_ -> region D (add (0,1) Q) V]]
+    |(_,0) ']' -> cat {P, add (0,-1) P} [_ -> cat (region D Q V) [_ -> region D (add (0,-1) Q) V]]
+    |(0,_) '[' -> cat {P, Q} [_ -> region D (add (0,1) Q) V]
+    |(0,_) ']' -> cat {P, Q} [_ -> region D (add (0,-1) Q) V]
+    |_     '@' -> cat {P} [_ -> region D (add P V) V]
+    |_     '#' -> none 
+    |_     _   -> {}] V (D::get D P)]
 
 def shove = 
     [D PP V -> let C = foldl [D P -> D::set D P '.'] (D::copy D) PP in
                foldl [C P -> D::set C (add P V) (D::get D P)] C PP]  
 
-def step = [D P V -> [none -> (D,P)|PP -> (shove (shove D PP V) {P} V, add P V)] (ahead D P V)]
+def step = [D P V -> [none -> (D,P)|PP -> (shove D PP V, add P V)] (region D P V)]
 
 def main =
     read_lines stdin |> parse |> [(XX,VV) ->(D::from_lists (map expand XX), map dir VV)]
