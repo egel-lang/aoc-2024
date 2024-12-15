@@ -2,7 +2,7 @@
 
 import "prelude.eg"
 
-using System, OS, List, String (to_chars, from_chars), D = Dict
+using System, OS, List, String (to_chars), D = Dict
 
 def parse = do map to_chars |> split_on {} |> [{XX,YY} -> (XX, reduce (++) YY)]
 
@@ -12,14 +12,13 @@ def expand = flatmap ['@' -> {'@','.'}|'O' -> {'[',']'}|'.' -> {'.','.'}|'#'->{'
 
 def start = do D::to_list |> filter ((==) '@' . snd) |> head |> fst
 
-def cat = [F G -> let XX = F none in if XX == none then XX else
-                  let YY = G none in if YY == none then YY else XX ++ YY]
+def cat = [XX G -> if XX == none then XX else let YY = G none in if YY == none then YY else XX ++ YY]
 
 def ahead = [D P V -> let Q = add P V in 
-    [(_,0) '[' -> cat [_ -> {Q, add (0,1) Q}] [_ -> cat [_ -> ahead D Q V] [_ -> ahead D (add (0,1) Q) V]]
-    |(_,0) ']' -> cat [_ -> {Q, add (0,-1) Q}] [_ -> cat [_ -> ahead D Q V] [_ -> ahead D (add (0,-1) Q) V]]
-    |(0,_) '[' -> cat [_ -> {Q, add (0,1) Q}] [_ -> ahead D (add (0,1) Q) V]
-    |(0,_) ']' -> cat [_ -> {Q, add (0,-1) Q}] [_ -> ahead D (add (0,-1) Q) V]
+    [(_,0) '[' -> cat {Q, add (0,1) Q} [_ -> cat (ahead D Q V) [_ -> ahead D (add (0,1) Q) V]]
+    |(_,0) ']' -> cat {Q, add (0,-1) Q} [_ -> cat (ahead D Q V) [_ -> ahead D (add (0,-1) Q) V]]
+    |(0,_) '[' -> cat {Q, add (0,1) Q} [_ -> ahead D (add (0,1) Q) V]
+    |(0,_) ']' -> cat {Q, add (0,-1) Q} [_ -> ahead D (add (0,-1) Q) V]
     |_     '#' -> none
     |_     _   -> {}] V (D::get D Q)]
 
