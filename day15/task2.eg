@@ -24,8 +24,8 @@ def region = [D P V -> let Q = add P V in
     |_     _   -> {}] V (D::get D P)]
 
 def shove = 
-    [D PP V -> let C = foldl [D P -> D::set D P '.'] (D::copy D) PP in
-               foldl [C P -> D::set C (add P V) (D::get D P)] C PP]  
+    [D PP V -> foldl [D (P,X) -> D::set D P X] D
+            (map [P -> (P,'.')] PP ++ map [P -> (add P V, D::get D P)] PP)]
 
 def step = [D P V -> [none -> (D,P)|PP -> (shove D PP V, add P V)] (region D P V)]
 
