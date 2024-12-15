@@ -12,31 +12,24 @@ def expand = flatmap ['@' -> {'@','.'}|'O' -> {'[',']'}|'.' -> {'.','.'}|'#'->{'
 
 def start = do D::to_list |> filter ((==) '@' . snd) |> head |> fst
 
-def ahead =
-    [D P V ->
-        let Q = add P V in 
-        [(_,0) '[' -> (Q, add (0,1) Q, ahead D Q V, ahead D (add (0,1) Q) V)
-        |(_,0) ']' -> (Q, add (0,-1) Q, ahead D Q V, ahead D (add (0,-1) Q) V)
-        |(0,_) '[' -> (Q, add (0,1) Q, ahead D (add (0,1) Q) V)
-        |(0,_) ']' -> (Q, add (0,-1) Q, ahead D (add (0,-1) Q) V)
-        |_     _   -> Q] V (D::get D Q)]
+def cat = [F G -> let XX = F none in if XX == none then XX else
+                  let YY = G none in if YY == none then YY else XX ++ YY]
 
-def blocked =
-    [D (_,_,PP,QQ) -> blocked D PP || [_ -> blocked D QQ]
-    |D (_,_,PP) -> blocked D PP
-    |D P -> (D::get D P) /= '.']
+def ahead = 
+    [D P V -> let Q = add P V in 
+        [(_,0) '[' -> cat [_ -> {Q, add (0,1) Q}] [_ -> cat [_ -> ahead D Q V] [_ -> ahead D (add (0,1) Q) V]]
+        |(_,0) ']' -> cat [_ -> {Q, add (0,-1) Q}] [_ -> cat [_ -> ahead D Q V] [_ -> ahead D (add (0,-1) Q) V]]
+        |(0,_) '[' -> cat [_ -> {Q, add (0,1) Q}] [_ -> ahead D (add (0,1) Q) V]
+        |(0,_) ']' -> cat [_ -> {Q, add (0,-1) Q}] [_ -> ahead D (add (0,-1) Q) V]
+        |_     '#' -> none
+        |_     _   -> {}] V (D::get D Q)]
 
-def boxes = [(P,Q,PP,QQ) -> {P,Q|boxes PP ++ boxes QQ} | (P,Q,PP) -> {P,Q|boxes PP} | _ -> {}]
+def shove = [D PP V -> let C = foldl [D P -> D::set D P '.'] (D::copy D) PP in
+                       foldl [C P -> D::set C (add P V) (D::get D P)] C PP]  
 
-def shove =
-    [D PP V ->
-        let C = foldl [D P -> D::set D P '.'] (D::copy D) PP in
-        foldl [C P -> D::set C (add P V) (D::get D P)] C PP ]  
+def step = [D P V -> [none -> (D,P)|PP -> (shove (shove D PP V) {P} V, add P V)] (ahead D P V)]
 
-def step = [D P V -> printf "{} {} {}\n" P V (ahead D P V);
-        [PP -> if blocked D PP then (D,P) else (shove (shove D (boxes PP) V) {P} V, add P V)] (ahead D P V)]
-
-def steps = [D P VV -> foldl [(D,P) V -> print P "\n";step D P V] (D,P) VV]
+def steps = [D P VV -> foldl [(D,P) V -> print P "\n";step D P V] (D,P) VV |> fst]
 
 def size = do D::keys |> reduce [P Q -> if P < Q then Q else P]
 
@@ -46,6 +39,5 @@ def debug =
 def main =
     read_lines stdin |> parse |> [(XX,VV) ->(D::from_lists (map expand XX), map dir VV)]
     |> [(D,VV) -> steps D (start D) VV]
-    #|> fst |> debug
-    |> fst |> D::to_list |> filter ((==) '[' . snd) |> map fst |> map [(X,Y) -> 100 * X + Y] |> sum
+    |> D::to_list |> foldl [N ((X,Y),'[') -> N + 100 * X + Y |N _ -> N] 0
 
