@@ -10,7 +10,7 @@ def dirs = {(0,1),(1,0),(0,-1),(-1,0)}
 
 def rotate = [(0,Y) -> {(Y,0),(-Y,0)} | (X,0) -> {(0,X),(0,-X)}]
 
-def insort = [P {} -> {P}|P {Q|QQ} -> if proj 0 P < proj 0 Q then {P,Q|QQ} else {Q|insort P QQ}]
+def insort = [P {} -> {P}|P {Q|QQ} -> if proj 0 P <= proj 0 Q then {P,Q|QQ} else {Q|insort P QQ}]
 
 def dijkstra0 = 
     [ G {} (D0,D1) -> (D0,D1)
