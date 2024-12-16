@@ -1,0 +1,56 @@
+# Advent of Code (AoC) - day 16, task 2
+
+import "prelude.eg"
+
+using System, OS, List, String (to_chars, from_chars), D = Dict
+
+def pos = [C -> do D::to_list |> filter ((==) C . snd) |> head |> fst]
+
+def dirs = {(0,1),(1,0),(0,-1),(-1,0)}
+
+def rotate = [(0,Y) -> {(Y,0),(-Y,0)} | (X,0) -> {(0,X),(0,-X)}]
+
+def insort =
+    [P {} -> {P}
+    |P {Q|QQ} -> if proj 0 P < proj 0 Q then {P,Q|QQ} else {Q|insort P QQ}]
+
+def dijkstra0 = 
+    [ G {} (D0,D1) -> (D0,D1)
+    | G {(N,P)|QQ} (D0,D1) ->
+        printf "N P {} {}\n" N P;
+        let ADJ = Dict::get G P in
+        let (D0,D1,QQ) = foldl [(D0,D1,QQ) (M,Q) ->
+                        let ALT = N + M in
+                        if ALT < D::get_with_default max_int D0 Q then 
+                        (D::set D0 Q ALT, D::set D1 Q {P}, insort (ALT,Q) QQ)
+                        else if ALT == D::get D0 Q then 
+                        (D::set D0 Q ALT, D::set D1 Q (unique {P|D::get D1 Q}), QQ)
+                        else (D0,D1,QQ)] (D0,D1,QQ) ADJ in
+            dijkstra0 G QQ (D0,D1) ]
+
+def dijkstra = [G P -> dijkstra0 G {(0,P)} (D::set D::dict P 0, D::set D::dict P {})]
+
+def adj =
+    [D (P,V) -> {(1,(add P V,V))} ++ map [V -> (1001, (add P V,V))] (rotate V)
+            |> filter ((/=) '#' . D::get D . fst . snd)]
+
+def to_graph =
+    [D -> foldl [G (P,'#') -> G 
+                |G (P,_) -> foldl [G (P,V) -> D::set G (P,V) (adj D (P,V))] G 
+                                  (map (tuple P) dirs)] D::dict (D::to_list D)] 
+
+def nodes = 
+    [D PP {} -> PP
+    |D PP {Q|QQ} -> nodes D {Q|PP} (D::get_with_default {} D Q ++ QQ)]
+
+def main =
+    read_lines stdin |> map to_chars |> D::from_lists 
+    |> [D -> let S = pos 'S' D in let E = pos 'E' D in
+        to_graph D |> [G -> dijkstra G (S,(0,1))]
+        |> [(D0,D1) -> 
+               map [P -> (Dict::get_with_default max_int D0 P,P)] (map (tuple E) dirs)
+               |> [PP -> filter ((==) (minimum (map fst PP)) . fst) PP |> map snd]
+               |> nodes D1 {}
+            ]
+        |> map fst |> unique |> length ]
+

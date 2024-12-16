@@ -1,0 +1,44 @@
+# Advent of Code (AoC) - day 16, task 1
+
+import "prelude.eg"
+
+using System, OS, List, String (to_chars, from_chars), D = Dict
+
+def pos = [C -> do D::to_list |> filter ((==) C . snd) |> head |> fst]
+
+def dirs = {(0,1),(1,0),(0,-1),(-1,0)}
+
+def rotate = [(0,Y) -> {(Y,0),(-Y,0)} | (X,0) -> {(0,X),(0,-X)}]
+
+def insort =
+    [P {} -> {P}
+    |P {Q|QQ} -> if proj 0 P < proj 0 Q then {P,Q|QQ} else {Q|insort P QQ}]
+
+def dijkstra0 = 
+    [ G {} D -> D
+    | G {(N,P)|QQ} D ->
+        let ADJ = Dict::get G P in
+        let (D,QQ) = foldl [(D,QQ) (M,Q) ->
+                        let ALT = N + M in
+                        if ALT < D::get_with_default max_int D Q then 
+                        (D::set D Q ALT, insort (ALT,Q) QQ)
+                        else (D,QQ)] (D,QQ) ADJ in
+            dijkstra0 G QQ D ]
+
+def dijkstra = [G P -> dijkstra0 G {(0,P)} (D::set D::dict P 0)]
+
+def adj =
+    [D (P,V) -> {(1,(add P V,V))} ++ map [V -> (1001, (add P V,V))] (rotate V)
+            |> filter ((/=) '#' . D::get D . fst . snd)]
+
+def to_graph =
+    [D -> foldl [G (P,'#') -> G 
+                |G (P,_) -> foldl [G (P,V) -> D::set G (P,V) (adj D (P,V))] G 
+                                  (map (tuple P) dirs)] D::dict (D::to_list D)] 
+
+def main =
+    read_lines stdin |> map to_chars |> D::from_lists 
+    |> [D -> to_graph D |> [G -> dijkstra G (pos 'S' D,(0,1))]
+    |> D::to_list |> map [((P,_),N) -> (P,N)] |> filter (((==) (pos 'E' D)) . fst)]
+    |> map snd |> minimum
+
