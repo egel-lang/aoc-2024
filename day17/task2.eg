@@ -4,8 +4,8 @@ import "prelude.eg"
 
 using System, OS, List, String (to_chars, from_chars), D = Dict
 
-def parse = do map (do Regex::matches (Regex::compile "-?[0-9]+") |> map to_int) |> split_on {}
-        |> flatten |> map [{X} -> X|X -> X] |> [{A,B,C,P} -> ((A,B,C,0),P)]
+def parse = do foldl (+) "" |> (do Regex::matches (Regex::compile "-?[0-9]+") |> map to_int) 
+            |> [{A,B,C|P} -> ((A,B,C,0),P)]
 
 def op = [N RR -> if N < 4 then N else proj (N - 4) RR]
 
