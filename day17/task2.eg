@@ -16,7 +16,7 @@ def ins =
     |3 N (0,B,C,P) -> (0,B,C,P+2)
     |3 N (A,B,C,P) -> (A,B,C,N)
     |4 N (A,B,C,P) -> (A,B^C,C,P+2)
-    |5 N (A,B,C,P) -> ((A,B,C,P+2),(op N (A,B,C,P))%8)
+    |5 N (A,B,C,P) -> ((A,B,C,P+2),(op N (A,B,C,P))%8) 
     |6 N (A,B,C,P) -> (A,A/(Math::pow_int 2 (op N (A,B,C,P))),C,P+2)
     |7 N (A,B,C,P) -> (A,B,A/(Math::pow_int 2 (op N (A,B,C,P))),P+2) ]
 
