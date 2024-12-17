@@ -19,14 +19,14 @@ def ins =
     |5 N (A,B,C,P) -> ((A,B,C,P+2),(op N (A,B,C,P))%8)
     |7 N (A,B,C,P) -> (A,B,A/(Math::pow_int 2 (op N (A,B,C,P))),P+2) ]
 
-def fetch = do D::get_with_default none
+def fetch = [_ {} -> none|0 {X|_} -> X|N {_|XX} -> fetch (N - 1) XX]
 
 def step = [((A,B,C,P),PP,OO) -> 
         [(none,_) -> none|(_,none) -> none
         |(OP,N) -> [(RR,O) -> (RR,PP,{O|OO})|RR -> (RR,PP,OO)] (ins OP N (A,B,C,P))]
-        (fetch PP P, fetch PP (P+1))]
+        (fetch P PP, fetch (P+1) PP)]
                    
-def run = [(RR,PP) -> while step (RR, D::from_list (zip (from_to 0 (length PP)) PP),{}) |> proj 2 |> reverse]
+def run = [(RR,PP) -> while step (RR,PP,{}) |> proj 2 |> reverse]
 
 def iter_with = [0 F X -> X|N F X -> iter_with (N - 1) F (F N X)]
 
@@ -34,6 +34,4 @@ def find = [PP -> iter_with (length PP) [L NN -> flatmap [(N,I) ->
             if run ((8*N+I, 0,0,0),PP) == (drop (L- 1) PP) then {8*N+I} else {}] 
             (flatmap [N -> map (tuple N) (from_to 0 7)] NN) ] {0} ] 
 
-def main =
-    read_lines stdin |> parse |> [(RR,PP) -> find PP] |> minimum
-
+def main = read_lines stdin |> parse |> [(RR,PP) -> find PP] |> minimum
