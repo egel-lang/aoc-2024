@@ -2,7 +2,7 @@
 
 import "prelude.eg"
 
-using System, OS, List, String (to_chars, from_chars), D = Dict
+using System, OS, List
 
 def parse = do foldl (+) "" |> (do Regex::matches (Regex::compile "-?[0-9]+") |> map to_int) 
             |> [{A,B,C|P} -> ((A,B,C,0),P)]
