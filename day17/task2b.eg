@@ -1,0 +1,32 @@
+# Advent of Code (AoC) - day 17, task 2
+
+import "prelude.eg"
+
+using System, OS, List
+
+def parse = do foldl (+) "" |> (do Regex::matches (Regex::compile "-?[0-9]+") |> map to_int) 
+            |> [{A,B,C|P} -> ((A,B,C),P)]
+
+def op = [N RR -> if N < 4 then N else proj (N - 4) RR]
+
+def ins =
+    [_ _ {} -> {}| _ _ {X} -> {}
+    |PP (A,B,C) {0,N|XX} -> ins PP (A/(Math::pow_int 2 (op N (A,B,C))),B,C) XX
+    |PP (A,B,C) {1,N|XX} -> ins PP (A,N^B,C) XX
+    |PP (A,B,C) {2,N|XX} -> ins PP (A,(op N (A,B,C))%8,C) XX
+    |PP (0,B,C) {3,N|XX} -> ins PP (0,B,C) XX
+    |PP (A,B,C) {3,N|XX} -> ins PP (A,B,C) (drop N PP)
+    |PP (A,B,C) {4,N|XX} -> ins PP (A,B^C,C) XX
+    |PP (A,B,C) {5,N|XX} -> {(op N (A,B,C))%8| ins PP (A,B,C) XX}
+    |PP (A,B,C) {6,N|XX} -> ins PP (A,A/(Math::pow_int 2 (op N (A,B,C))),C) XX
+    |PP (A,B,C) {7,N|XX} -> ins PP (A,B,A/(Math::pow_int 2 (op N (A,B,C)))) XX]
+
+def run = [(RR,PP) -> ins PP RR PP] 
+
+def iter_with = [0 F X -> X|N F X -> iter_with (N - 1) F (F N X)]
+
+def find = [PP -> iter_with (length PP) [L NN -> flatmap
+            [(N,I) -> if run ((8*N+I,0,0),PP) == (drop (L - 1) PP) then {8*N+I} else {}] 
+            (flatmap [N -> map (tuple N) (from_to 0 7)] NN) ] {0}] 
+
+def main = read_lines stdin |> parse |> [(RR,PP) -> find PP] |> minimum
