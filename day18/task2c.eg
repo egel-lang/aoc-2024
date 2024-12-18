@@ -1,0 +1,37 @@
+# Advent of Code (AoC) - day 18, task 2
+
+import "prelude.eg"
+
+using System, OS, List, String (to_chars, from_chars), D = Dict
+
+def dirs = {(0,1),(1,0),(0,-1),(-1,0)}
+
+def board =
+    [(X,Y) PP ->
+        let F = [C -> foldl [D P -> D::set D P C]] in
+        F '#' (F '.' D::dict (flatmap [X -> map (tuple X) (from_to 0 Y)] (from_to 0 X))) PP]
+
+def adj =
+    [D P -> map (add P) dirs |> filter [P -> D::has D P && [_ -> D::get D P /= '#']]]
+
+def graph =
+    [D -> foldl [G (P,'#') -> D::set G P {}|G (P,_) -> D::set G P (adj D P)] D::dict (D::to_list D)]
+
+def reachable =
+    [G V {} -> V
+    |G V XX -> reachable G (foldl [V X -> D::set V X 0] V XX) 
+                           (flatmap (D::get G) XX |> unique |> filter (not . D::has V))]
+
+def remove =
+    [G B -> foldl [G (A,B) -> D::update G [BB -> {B|BB}] A] G
+            ((map (add B) dirs) |> filter (D::has G) |> [BB -> (map (tuple B) BB) ++ (map (flip tuple B) BB)])]
+        
+def search =
+    [G V E {B|BB} -> 
+        let G = remove G B in let V = reachable G V (map (add B) dirs |> filter (D::has V)) in
+        if D::has V E then B else search G V E BB]
+
+def main =
+    let S = (0,0) in let E = (70,70) in
+    read_lines stdin |> map (list_to_tuple . map to_int . Regex::matches (Regex::compile "[0-9]+"))
+    |> [BB -> board E BB |> graph |> [G -> search G (reachable G D::dict {S}) E (reverse BB)]]
