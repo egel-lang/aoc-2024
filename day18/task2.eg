@@ -24,7 +24,7 @@ def dijkstra = [G P -> dijkstra0 G {(0,P)} (D::set D::dict P 0)]
 def board =
     [(X,Y) PP ->
         let F = [C -> foldl [D P -> D::set D P C]] in
-        F '#' (F '.' D::dict (flatmap [X -> map (tuple X) (from_to 0 Y)] (from_to 0 Y))) PP]
+        F '#' (F '.' D::dict (flatmap [X -> map (tuple X) (from_to 0 Y)] (from_to 0 X))) PP]
 
 def adj =
     [D P -> map (add P) dirs |> filter [P -> D::has D P && [_ -> D::get D P /= '#']]]
