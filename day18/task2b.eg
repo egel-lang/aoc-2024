@@ -1,0 +1,37 @@
+# Advent of Code (AoC) - day 18, task 2
+
+import "prelude.eg"
+
+using System, OS, List, String (to_chars, from_chars), D = Dict
+
+def dirs = {(0,1),(1,0),(0,-1),(-1,0)}
+
+def board =
+    [(X,Y) PP ->
+        let F = [C -> foldl [D P -> D::set D P C]] in
+        F '#' (F '.' D::dict (flatmap [X -> map (tuple X) (from_to 0 Y)] (from_to 0 X))) PP]
+
+def adj =
+    [D P -> map (add P) dirs |> filter [P -> D::has D P && [_ -> D::get D P /= '#']]]
+
+def to_graph =
+    [D -> foldl [G (P,'#') -> G |G (P,_) -> D::set G P (adj D P)] D::dict (D::to_list D)]
+
+def reachable =
+    [G V {} -> V
+    |G V XX -> reachable G (foldl [V X -> D::set V X 0] V XX) 
+                           (flatmap (D::get G) XX |> unique |> filter (not . D::has V))]
+
+def has_path =
+    [N S E -> do take N |> board E |> to_graph |> [G -> reachable G D::dict {S}] |> flip D::has E]
+
+def bin0 =
+    [L R J P PP -> if L > R then J else let M = (L+R)/2 in 
+        if P (nth M PP) then bin0 (M+1) R M P PP else bin0 L (M - 1) J P PP]
+
+def bin = [P PP -> bin0 0 (length PP - 1) none P PP]
+
+def main =
+    let S = (0,0) in let E = (70,70) in
+    read_lines stdin |> map (list_to_tuple . map to_int . Regex::matches (Regex::compile "[0-9]+"))
+    |> [PP -> bin [N -> has_path N S E PP] (from_to 0 (length PP - 1)) |> flip nth PP]
