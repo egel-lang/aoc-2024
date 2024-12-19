@@ -22,7 +22,7 @@ def loops =
         (start_pos D,0) |> Dict::has V]
 
 def solve =
-    [D -> foldl [N P -> if loops (Dict::set (Dict::copy D) P '#') then printf "{} {}\n" N P; N+1 else N] 0 
+    [D -> foldl [N P -> if loops (Dict::set (Dict::copy D) P '#') then N+1 else N] 0 
           (map fst (track D) |> tail |> unique)]
       
 def main =

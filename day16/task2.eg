@@ -15,7 +15,6 @@ def insort = [P {} -> {P}|P {Q|QQ} -> if proj 0 P <= proj 0 Q then {P,Q|QQ} else
 def dijkstra0 = 
     [ G {} (D0,D1) -> (D0,D1)
     | G {(N,P)|QQ} (D0,D1) ->
-        printf "N P {} {}\n" N P;
         let ADJ = Dict::get G P in
         let (D0,D1,QQ) = foldl [(D0,D1,QQ) (M,Q) ->
                         let ALT = N + M in

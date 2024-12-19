@@ -158,7 +158,7 @@ Marco Devillers
             (start_pos D,0) |> Dict::has V]
 
     def solve =
-        [D -> foldl [N P -> if loops (Dict::set (Dict::copy D) P '#') then printf "{} {}\n" N P; N+1 else N] 0 
+        [D -> foldl [N P -> if loops (Dict::set (Dict::copy D) P '#') then N+1 else N] 0 
               (map fst (track D) |> tail |> unique)]
 
     def main =
@@ -445,7 +445,7 @@ Marco Devillers
 
     def main =
         read_lines stdin |> parse |> [(XX,VV) ->(D::from_lists (map expand XX), map dir VV)]
-        |> [(D,VV) -> foldl [(D,P) V -> print P "\n"; step D P V] (D, start D) VV] |> fst
+        |> [(D,VV) -> foldl [(D,P) V -> step D P V] (D, start D) VV] |> fst
         |> D::to_list |> foldl [N ((X,Y),'[') -> N + 100 * X + Y |N _ -> N] 0
 
 ```
@@ -472,7 +472,6 @@ Marco Devillers
     def dijkstra0 = 
         [ G {} (D0,D1) -> (D0,D1)
         | G {(N,P)|QQ} (D0,D1) ->
-            printf "N P {} {}\n" N P;
             let ADJ = Dict::get G P in
             let (D0,D1,QQ) = foldl [(D0,D1,QQ) (M,Q) ->
                             let ALT = N + M in

@@ -31,6 +31,6 @@ def step = [D P V -> [none -> (D,P)|PP -> (shove D PP V, add P V)] (region D P V
 
 def main =
     read_lines stdin |> parse |> [(XX,VV) ->(D::from_lists (map expand XX), map dir VV)]
-    |> [(D,VV) -> foldl [(D,P) V -> print P "\n"; step D P V] (D, start D) VV] |> fst
+    |> [(D,VV) -> foldl [(D,P) V -> step D P V] (D, start D) VV] |> fst
     |> D::to_list |> foldl [N ((X,Y),'[') -> N + 100 * X + Y |N _ -> N] 0
 
