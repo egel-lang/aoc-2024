@@ -1,0 +1,94 @@
+.import "prelude.eg";;
+.using System;;
+.using List;;
+.egel def code = [S -> OS::read_lines (OS::open_in S) |> map ((+) "    ") |> [LL -> {"```"} ++ LL ++ {"```"}] |> reduce [S0 S1 -> S0 + "\n" + S1]];;
+.def author = "Marco Devillers";;
+.def title = "Advent of Code 2024 - Egel Solutions";;
+.def footer = "Copyright 2024 " + author + ", MIT licence";;
+.def fancy = [T -> "·:*¨༺ ♱✮  " + T + "  ✮♱༻¨*:·"];;
+.egel add_reference "Egel" "Devillers, Marco. The Egel Language. Github, [Egel Language](https://egel-lang.github.io/), 2024.";;
+# {{fancy title}}
+
+  {{author}}
+
+## Day 1 
+
+{{code "day01/task2.eg"}}
+
+## Day 2 
+
+{{code "day02/task2.eg"}}
+
+## Day 3 
+
+{{code "day03/task2.eg"}}
+
+## Day 4 
+
+{{code "day04/task2.eg"}}
+
+## Day 5 
+
+{{code "day05/task2.eg"}}
+
+## Day 6 
+
+{{code "day06/task2.eg"}}
+
+## Day 7 
+
+{{code "day07/task2.eg"}}
+
+## Day 8 
+
+{{code "day08/task2.eg"}}
+
+## Day 9 
+
+{{code "day09/task2.eg"}}
+
+## Day 10 
+
+{{code "day10/task2.eg"}}
+
+## Day 11 
+
+{{code "day10/task2.eg"}}
+
+## Day 12 
+
+{{code "day12/task2.eg"}}
+
+## Day 13 
+
+{{code "day13/task2.eg"}}
+
+## Day 14 
+
+{{code "day14/task2.eg"}}
+
+## Day 15 
+
+{{code "day15/task2.eg"}}
+
+## Day 16 
+
+{{code "day16/task2.eg"}}
+
+## Day 17 
+
+{{code "day17/task2.eg"}}
+
+## Day 18 
+
+{{code "day18/task2.eg"}}
+
+## Day 19 
+
+{{code "day19/task2.eg"}}
+
+## References
+
+{{references}}
+
+.hook [XX -> XX ++ {footer}]
