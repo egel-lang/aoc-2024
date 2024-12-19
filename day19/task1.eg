@@ -1,0 +1,18 @@
+# Advent of Code (AoC) - day 19, task 1
+
+import "prelude.eg"
+
+using System, OS, List, String (starts_with, remove, count, split_pattern), D = Dict
+
+def match =
+    [X Y -> if starts_with X Y then remove 0 (count X) Y else none]
+
+def solve =
+    [XX _  D "" -> true
+    |XX {} D Z -> false
+    |XX {Y|YY} D Z -> [none -> solve XX YY D Z |Z0 -> (D::memo D (solve XX XX) Z0) || [_ -> solve XX YY D Z]] (match Y Z)]
+
+def main =
+    read_lines stdin |> split_on "" |> [{{XX},YY} -> (split_pattern ", " XX, YY)]
+    |> [(XX, YY) -> filter [Y -> solve XX XX D::dict Y] YY |> length]
+
