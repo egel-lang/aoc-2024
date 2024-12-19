@@ -1,4 +1,4 @@
-# Advent of Code 2024 - Egel Solutions
+# Egel Solutions to Advent of Code 2024
 
 Marco Devillers
 
@@ -22,6 +22,8 @@ Marco Devillers
     def main =
         input |> map parse |> transpose |> tally |> map [(X,(Y,Z)) -> X*Y*Z] |> sum
 ```
+
+[Day 1](https://adventofcode.com/2024/day/1)
 
 ## Day 2 
 
@@ -50,6 +52,8 @@ Marco Devillers
         input |> map parse |> map dampened |> map (any safe) 
               |> filter id |> length
 ```
+
+[Day 2](https://adventofcode.com/2024/day/2)
 
 ## Day 3 
 
@@ -80,6 +84,8 @@ Marco Devillers
         input |> foldl (+) "" |> parse |> calc true
 ```
 
+[Day 3](https://adventofcode.com/2024/day/3)
+
 ## Day 4 
 
 ```
@@ -99,6 +105,8 @@ Marco Devillers
         |> filter (flip elem {"MASMAS", "MASSAM", "SAMMAS", "SAMSAM"}) |> length
 
 ```
+
+[Day 4](https://adventofcode.com/2024/day/4)
 
 ## Day 5 
 
@@ -120,6 +128,8 @@ Marco Devillers
         |> [(PP,XX) -> filter (join ((/=) . sort_by (order PP))) XX |> map (sort_by (order PP))]
         |> map (join (nth . flip (/) 2 . length)) |> sum
 ```
+
+[Day 5](https://adventofcode.com/2024/day/5)
 
 ## Day 6 
 
@@ -156,6 +166,8 @@ Marco Devillers
 
 ```
 
+[Day 6](https://adventofcode.com/2024/day/6)
+
 ## Day 7 
 
 ```
@@ -178,6 +190,8 @@ Marco Devillers
         read_lines stdin |> map parse |> map [XX -> (head XX, solutions (tail XX))] 
         |> filter [(X,XX) -> (filter ((==) X) XX) /= {}] |> map fst |> sum
 ```
+
+[Day 7](https://adventofcode.com/2024/day/7)
 
 ## Day 8 
 
@@ -208,6 +222,8 @@ Marco Devillers
         |> [ D -> antennas D |> antinodes D ]
         |> length
 ```
+
+[Day 8](https://adventofcode.com/2024/day/8)
 
 ## Day 9 
 
@@ -240,6 +256,8 @@ Marco Devillers
 
 ```
 
+[Day 9](https://adventofcode.com/2024/day/9)
+
 ## Day 10 
 
 ```
@@ -267,6 +285,8 @@ Marco Devillers
 
 ```
 
+[Day 10](https://adventofcode.com/2024/day/10)
+
 ## Day 11 
 
 ```
@@ -293,6 +313,8 @@ Marco Devillers
         |> length
 
 ```
+
+[Day 11](https://adventofcode.com/2024/day/11)
 
 ## Day 12 
 
@@ -331,6 +353,8 @@ Marco Devillers
         |> map [(PP0,PP1) -> (length PP0) * (length PP1)] |> sum
 ```
 
+[Day 12](https://adventofcode.com/2024/day/12)
+
 ## Day 13 
 
 ```
@@ -355,6 +379,8 @@ Marco Devillers
         |> filter ((/=) none) |> map [(M,N) -> 3 * M + N] |> sum
 
 ```
+
+[Day 13](https://adventofcode.com/2024/day/13)
 
 ## Day 14 
 
@@ -388,6 +414,8 @@ Marco Devillers
         none
 
 ```
+
+[Day 14](https://adventofcode.com/2024/day/14)
 
 ## Day 15 
 
@@ -429,6 +457,8 @@ Marco Devillers
         |> D::to_list |> foldl [N ((X,Y),'[') -> N + 100 * X + Y |N _ -> N] 0
 
 ```
+
+[Day 15](https://adventofcode.com/2024/day/15)
 
 ## Day 16 
 
@@ -488,6 +518,8 @@ Marco Devillers
 
 ```
 
+[Day 16](https://adventofcode.com/2024/day/16)
+
 ## Day 17 
 
 ```
@@ -530,6 +562,8 @@ Marco Devillers
 
     def main = read_lines stdin |> parse |> [(RR,PP) -> find PP] |> minimum
 ```
+
+[Day 17](https://adventofcode.com/2024/day/17)
 
 ## Day 18 
 
@@ -583,6 +617,8 @@ Marco Devillers
         |> [PP -> bin [N -> find N S E PP /= {}] (from_to 0 (length PP - 1)) |> flip nth PP]
 ```
 
+[Day 18](https://adventofcode.com/2024/day/18)
+
 ## Day 19 
 
 ```
@@ -606,7 +642,7 @@ Marco Devillers
 
 ```
 
-## References
+[Day 19](https://adventofcode.com/2024/day/19)
 
 [1] Devillers, Marco. The Egel Language. Github, [Egel Language](https://egel-lang.github.io/),
     2024.
