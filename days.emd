@@ -5,9 +5,8 @@
 .def author = "Marco Devillers";;
 .def title = "Advent of Code 2024 - Egel Solutions";;
 .def footer = "Copyright 2024 " + author + ", MIT licence";;
-.def fancy = [T -> "·:*¨༺ ♱✮  " + T + "  ✮♱༻¨*:·"];;
 .egel add_reference "Egel" "Devillers, Marco. The Egel Language. Github, [Egel Language](https://egel-lang.github.io/), 2024.";;
-# {{fancy title}}
+# {{title}}
 
   {{author}}
 
