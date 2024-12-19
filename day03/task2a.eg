@@ -14,11 +14,11 @@ def args =
     do Regex::matches (Regex::compile "[0-9]+") |> map to_int
 
 def calc =
-    foldl_state
-    [ _ N "don't()" -> (false, N)
-    | _ N "do()"    -> (true, N)
-    | true N X      -> (true, product (args X) + N)
-    | false N X     -> (false, N) ] true 0
+    [ _ {}             -> 0
+    | _ {"don't()"|XX} -> calc false XX
+    | _ {"do()"|XX}    -> calc true XX
+    | true {X|XX}      -> product (args X) + calc true XX 
+    | false {X|XX}     -> calc false XX ]
     
 def main =
-    input |> foldl (+) "" |> parse |> calc
+    input |> foldl (+) "" |> parse |> calc true

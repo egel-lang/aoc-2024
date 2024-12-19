@@ -2,19 +2,17 @@
 
 import "prelude.eg"
 
-using System, OS, List, String (count, sp = split, split_pattern)
+using System, OS, List, String (len=count, sp=split, split_pattern), D = Dict
 
 def rule = 
     [0 -> {1}
     |N -> let S = to_text N in 
-        if (count S)%2 == 0 then 
-            sp ((count S)/2) S |> tuple_to_list |> map to_int
+        if (len S)%2 == 0 then sp ((len S)/2) S |> tuple_to_list |> map to_int
         else {N*2024}]
 
 def blink =
-    [D (0, S) -> 1
-    |D (N, S) -> rule S |> map (tuple (N - 1)) |> map (Dict::memo D blink) |> sum]
+    do flatmap [(S,N) -> rule S |> map (flip tuple N)] |> D::from_list_with (+) |> D::to_list
 
 def main =
-    read_line stdin |> split_pattern " " |> map to_int 
-    |> map (tuple 75) |> map (blink Dict::dict) |> sum
+    read_line stdin |> split_pattern " " |> map to_int |> map (flip tuple 1)
+    |> iter 75 blink |> map snd |> sum

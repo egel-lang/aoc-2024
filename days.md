@@ -74,14 +74,14 @@ Marco Devillers
         do Regex::matches (Regex::compile "[0-9]+") |> map to_int
 
     def calc =
-        [ _ {}             -> 0
-        | _ {"don't()"|XX} -> calc false XX
-        | _ {"do()"|XX}    -> calc true XX
-        | true {X|XX}      -> product (args X) + calc true XX 
-        | false {X|XX}     -> calc false XX ]
+        foldl_state
+        [ _ N "don't()" -> (false, N)
+        | _ N "do()"    -> (true, N)
+        | true N X      -> (true, product (args X) + N)
+        | false N X     -> (false, N) ] true 0
 
     def main =
-        input |> foldl (+) "" |> parse |> calc true
+        input |> foldl (+) "" |> parse |> calc
 ```
 
 [Day 3](https://adventofcode.com/2024/day/3)
@@ -269,19 +269,15 @@ Marco Devillers
 
     def dirs = {(-1,0),(1,0),(0,-1),(0,1)}
 
-    def start = do Dict::to_list |> filter (do snd |> ((==)'0')) |> map fst
+    def starts = do Dict::to_list |> filter (do snd |> ((==)'0')) |> map fst |> map singleton
 
     def trails =
-        [D -> flatmap [PP -> 
-            if Dict::get D (head PP) == '9' then {PP}
-            else map (add (head PP)) dirs |> map (flip cons PP)
-                |> filter [{P,Q|PP} -> Dict::get_with_default '0' D P == succ (Dict::get D Q)]
-                |> trails D]]
+        [D -> iter 9 (flatmap [PP -> map (add (head PP)) dirs |> map (flip cons PP)
+                |> filter [{P,Q|PP} -> Dict::get_safe D P == succ (Dict::get D Q)]])]
 
     def main =
         read_lines stdin |> map to_chars |> Dict::from_lists
-        |> [D -> start D |> map (flip cons nil) |> trails D ]
-        |> length
+        |> [D -> starts D |> trails D ] |> length
 
 ```
 
@@ -298,19 +294,15 @@ Marco Devillers
 
     def dirs = {(-1,0),(1,0),(0,-1),(0,1)}
 
-    def start = do Dict::to_list |> filter (do snd |> ((==)'0')) |> map fst
+    def starts = do Dict::to_list |> filter (do snd |> ((==)'0')) |> map fst |> map singleton
 
     def trails =
-        [D -> flatmap [PP -> 
-            if Dict::get D (head PP) == '9' then {PP}
-            else map (add (head PP)) dirs |> map (flip cons PP)
-                |> filter [{P,Q|PP} -> Dict::get_with_default '0' D P == succ (Dict::get D Q)]
-                |> trails D]]
+        [D -> iter 9 (flatmap [PP -> map (add (head PP)) dirs |> map (flip cons PP)
+                |> filter [{P,Q|PP} -> Dict::get_safe D P == succ (Dict::get D Q)]])]
 
     def main =
         read_lines stdin |> map to_chars |> Dict::from_lists
-        |> [D -> start D |> map (flip cons nil) |> trails D ]
-        |> length
+        |> [D -> starts D |> trails D ] |> length
 
 ```
 
@@ -389,29 +381,29 @@ Marco Devillers
 
     import "prelude.eg"
 
-    using System, OS, List, String (to_chars, from_chars), D = Dict
+    using System, OS, List
 
     def parse = do Regex::matches (Regex::compile "-?[0-9]+") |> map to_int
                 |> chunks 2 |> map list_to_tuple |> list_to_tuple
 
     def size = (101,103)
 
-    def walk = [N (P,V) -> add P (mul N V)]
-
     def mod = [N M -> ((N%M)+M)%M]
 
-    def clip = [(BX, BY) (PX,PY) -> (mod PX BX, mod PY BY)]
+    def walk = [N (P,V) -> add P (mul N V) |> [(BX, BY) (PX,PY) -> (mod PX BX, mod PY BY)] size]
 
-    def display =
-        [(PX,PY) N PP ->
-            let PP = map (clip size . walk N) PP in
-            let D = D::from_list (map (flip tuple 1) PP) in
-            map [X -> map [Y -> print (if D::has D (X,Y) then "x" else ".")] (from_to 0 PY); print "\n"] (from_to 0 PX);
-            printf "seconds passed: {}\n" N]
+    def quadrants = [(BX,BY) PP -> 
+            {filter [(PX,PY) -> and (PX < (BX/2)) (PY < (BY/2))] PP,
+             filter [(PX,PY) -> and (PX < (BX/2)) (PY > (BY/2))] PP,
+             filter [(PX,PY) -> and (PX > (BX/2)) (PY < (BY/2))] PP,
+             filter [(PX,PY) -> and (PX > (BX/2)) (PY > (BY/2))] PP} ]
 
     def main =
-        read_lines stdin |> map parse |> [PP -> map [N -> display size N PP] (from_to 0 (uncurry (*) size))];
-        none
+        read_lines stdin |> map parse 
+        |> [PP -> map [N -> (map (walk N) PP, N)] (from_to 0 (uncurry (*) size))]
+        |> map (proj_update 0 (product . map length . quadrants size))
+        |> reduce [(I,N) (J,M) -> if I < J then (I,N) else (J,M)]
+        |> snd
 
 ```
 
@@ -530,34 +522,28 @@ Marco Devillers
     using System, OS, List
 
     def parse = do foldl (+) "" |> (do Regex::matches (Regex::compile "-?[0-9]+") |> map to_int) 
-                |> [{A,B,C|P} -> ((A,B,C,0),P)]
+                |> [{A,B,C|P} -> ((A,B,C),P)]
 
     def op = [N RR -> if N < 4 then N else proj (N - 4) RR]
 
     def ins =
-        [0 N (A,B,C,P) -> (A/(Math::pow_int 2 (op N (A,B,C,P))),B,C,P+2) 
-        |1 N (A,B,C,P) -> (A,N^B,C,P+2)
-        |2 N (A,B,C,P) -> (A,(op N (A,B,C,P))%8,C,P+2)
-        |3 N (0,B,C,P) -> (0,B,C,P+2)
-        |3 N (A,B,C,P) -> (A,B,C,N)
-        |4 N (A,B,C,P) -> (A,B^C,C,P+2)
-        |5 N (A,B,C,P) -> ((A,B,C,P+2),(op N (A,B,C,P))%8) 
-        |6 N (A,B,C,P) -> (A,A/(Math::pow_int 2 (op N (A,B,C,P))),C,P+2)
-        |7 N (A,B,C,P) -> (A,B,A/(Math::pow_int 2 (op N (A,B,C,P))),P+2) ]
+        [_ _ {} -> {}| _ _ {X} -> {}
+        |PP (A,B,C) {0,N|XX} -> ins PP (A/(Math::pow_int 2 (op N (A,B,C))),B,C) XX
+        |PP (A,B,C) {1,N|XX} -> ins PP (A,N^B,C) XX
+        |PP (A,B,C) {2,N|XX} -> ins PP (A,(op N (A,B,C))%8,C) XX
+        |PP (0,B,C) {3,N|XX} -> ins PP (0,B,C) XX
+        |PP (A,B,C) {3,N|XX} -> ins PP (A,B,C) (drop N PP)
+        |PP (A,B,C) {4,N|XX} -> ins PP (A,B^C,C) XX
+        |PP (A,B,C) {5,N|XX} -> {(op N (A,B,C))%8| ins PP (A,B,C) XX}
+        |PP (A,B,C) {6,N|XX} -> ins PP (A,A/(Math::pow_int 2 (op N (A,B,C))),C) XX
+        |PP (A,B,C) {7,N|XX} -> ins PP (A,B,A/(Math::pow_int 2 (op N (A,B,C)))) XX]
 
-    def fetch = [_ {} -> none|0 {X|_} -> X|N {_|XX} -> fetch (N - 1) XX]
-
-    def step = [((A,B,C,P),PP,OO) -> 
-            [(none,_) -> none |(_,none) -> none
-            |(OP,N) -> [(RR,O) -> (RR,PP,{O|OO})|RR -> (RR,PP,OO)] (ins OP N (A,B,C,P))]
-            (fetch P PP, fetch (P+1) PP)]
-
-    def run = [(RR,PP) -> while step (RR,PP,{}) |> proj 2 |> reverse]
+    def run = [(RR,PP) -> ins PP RR PP] 
 
     def iter_with = [0 F X -> X|N F X -> iter_with (N - 1) F (F N X)]
 
     def find = [PP -> iter_with (length PP) [L NN -> flatmap
-                [(N,I) -> if run ((8*N+I,0,0,0),PP) == (drop (L - 1) PP) then {8*N+I} else {}] 
+                [(N,I) -> if run ((8*N+I,0,0),PP) == (drop (L - 1) PP) then {8*N+I} else {}] 
                 (flatmap [N -> map (tuple N) (from_to 0 7)] NN) ] {0}] 
 
     def main = read_lines stdin |> parse |> [(RR,PP) -> find PP] |> minimum
@@ -576,21 +562,6 @@ Marco Devillers
 
     def dirs = {(0,1),(1,0),(0,-1),(-1,0)}
 
-    def insort = [P {} -> {P} |P {Q|QQ} -> if proj 0 P <= proj 0 Q then {P,Q|QQ} else {Q|insort P QQ}]
-
-    def dijkstra0 = 
-        [ G {} D -> D
-        | G {(N,P)|QQ} D ->
-            let ADJ = Dict::get G P in
-            let (D,QQ) = foldl [(D,QQ) (M,Q) ->
-                            let ALT = N + M in
-                            if ALT < D::get_with_default max_int D Q then 
-                            (D::set D Q ALT, insort (ALT,Q) QQ)
-                            else (D,QQ)] (D,QQ) ADJ in
-                dijkstra0 G QQ D ]
-
-    def dijkstra = [G P -> dijkstra0 G {(0,P)} (D::set D::dict P 0)]
-
     def board =
         [(X,Y) PP ->
             let F = [C -> foldl [D P -> D::set D P C]] in
@@ -599,22 +570,27 @@ Marco Devillers
     def adj =
         [D P -> map (add P) dirs |> filter [P -> D::has D P && [_ -> D::get D P /= '#']]]
 
-    def to_graph =
-        [D -> foldl [G (P,'#') -> G |G (P,_) -> D::set G P (map (tuple 1) (adj D P))] D::dict (D::to_list D)]
+    def graph =
+        [D -> foldl [G (P,'#') -> D::set G P {}|G (P,_) -> D::set G P (adj D P)] D::dict (D::to_list D)]
 
-    def find =
-        [B S E -> do take B |> board E |> to_graph |> [G -> dijkstra G S] |> D::to_list |> filter (((==) E) . fst)]
+    def reachable =
+        [G V {} -> V
+        |G V XX -> reachable G (foldl [V X -> D::set V X 0] V XX) 
+                               (flatmap (D::get G) XX |> unique |> filter (not . D::has V))]
 
-    def bin0 =
-        [L R J P PP -> if L > R then J else let M = (L+R)/2 in 
-            if P (nth M PP) then bin0 (M+1) R M P PP else bin0 L (M - 1) J P PP]
+    def remove =
+        [G B -> foldl [G (A,B) -> D::update G [BB -> {B|BB}] A] G
+                ((map (add B) dirs) |> filter (D::has G) |> [BB -> (map (tuple B) BB) ++ (map (flip tuple B) BB)])]
 
-    def bin = [P PP -> bin0 0 (length PP - 1) none P PP]
+    def search =
+        [G V E {B|BB} -> 
+            let G = remove G B in let V = reachable G V (map (add B) dirs |> filter (D::has V)) in
+            if D::has V E then B else search G V E BB]
 
     def main =
         let S = (0,0) in let E = (70,70) in
         read_lines stdin |> map (list_to_tuple . map to_int . Regex::matches (Regex::compile "[0-9]+"))
-        |> [PP -> bin [N -> find N S E PP /= {}] (from_to 0 (length PP - 1)) |> flip nth PP]
+        |> [BB -> board E BB |> graph |> [G -> search G (reachable G D::dict {S}) E (reverse BB)]]
 ```
 
 [Day 18](https://adventofcode.com/2024/day/18)

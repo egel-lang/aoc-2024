@@ -1,0 +1,47 @@
+# Advent of Code (AoC) - day 18, task 2
+
+import "prelude.eg"
+
+using System, OS, List, String (to_chars, from_chars), D = Dict
+
+def dirs = {(0,1),(1,0),(0,-1),(-1,0)}
+
+def insort = [P {} -> {P} |P {Q|QQ} -> if proj 0 P <= proj 0 Q then {P,Q|QQ} else {Q|insort P QQ}]
+
+def dijkstra0 = 
+    [ G {} D -> D
+    | G {(N,P)|QQ} D ->
+        let ADJ = Dict::get G P in
+        let (D,QQ) = foldl [(D,QQ) (M,Q) ->
+                        let ALT = N + M in
+                        if ALT < D::get_with_default max_int D Q then 
+                        (D::set D Q ALT, insort (ALT,Q) QQ)
+                        else (D,QQ)] (D,QQ) ADJ in
+            dijkstra0 G QQ D ]
+
+def dijkstra = [G P -> dijkstra0 G {(0,P)} (D::set D::dict P 0)]
+
+def board =
+    [(X,Y) PP ->
+        let F = [C -> foldl [D P -> D::set D P C]] in
+        F '#' (F '.' D::dict (flatmap [X -> map (tuple X) (from_to 0 Y)] (from_to 0 X))) PP]
+
+def adj =
+    [D P -> map (add P) dirs |> filter [P -> D::has D P && [_ -> D::get D P /= '#']]]
+
+def to_graph =
+    [D -> foldl [G (P,'#') -> G |G (P,_) -> D::set G P (map (tuple 1) (adj D P))] D::dict (D::to_list D)]
+
+def find =
+    [B S E -> do take B |> board E |> to_graph |> [G -> dijkstra G S] |> D::to_list |> filter (((==) E) . fst)]
+
+def bin0 =
+    [L R J P PP -> if L > R then J else let M = (L+R)/2 in 
+        if P (nth M PP) then bin0 (M+1) R M P PP else bin0 L (M - 1) J P PP]
+
+def bin = [P PP -> bin0 0 (length PP - 1) none P PP]
+
+def main =
+    let S = (0,0) in let E = (70,70) in
+    read_lines stdin |> map (list_to_tuple . map to_int . Regex::matches (Regex::compile "[0-9]+"))
+    |> [PP -> bin [N -> find N S E PP /= {}] (from_to 0 (length PP - 1)) |> flip nth PP]

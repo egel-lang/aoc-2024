@@ -1,0 +1,18 @@
+# Advent of Code (AoC) - day 7, task 2
+
+import "prelude.eg"
+
+using System, OS, List
+
+def parse = 
+    do Regex::matches (Regex::compile "[0-9]+") |> map to_int
+
+def cat =
+    [X Y -> to_int (to_text X + to_text Y)]
+
+def solutions =
+    [{X|XX} -> foldl [ZZ X -> flatmap [Z -> {Z*X, Z+X, cat Z X}] ZZ] {X} XX]
+
+def main =
+    read_lines stdin |> map parse |> map [XX -> (head XX, solutions (tail XX))] 
+    |> filter [(X,XX) -> (filter ((==) X) XX) /= {}] |> map fst |> sum

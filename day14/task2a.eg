@@ -1,0 +1,28 @@
+# Advent of Code (AoC) - day 14, task 2
+
+import "prelude.eg"
+
+using System, OS, List, String (to_chars, from_chars), D = Dict
+
+def parse = do Regex::matches (Regex::compile "-?[0-9]+") |> map to_int
+            |> chunks 2 |> map list_to_tuple |> list_to_tuple
+
+def size = (101,103)
+
+def walk = [N (P,V) -> add P (mul N V)]
+
+def mod = [N M -> ((N%M)+M)%M]
+
+def clip = [(BX, BY) (PX,PY) -> (mod PX BX, mod PY BY)]
+
+def display =
+    [(PX,PY) N PP ->
+        let PP = map (clip size . walk N) PP in
+        let D = D::from_list (map (flip tuple 1) PP) in
+        map [X -> map [Y -> print (if D::has D (X,Y) then "x" else ".")] (from_to 0 PY); print "\n"] (from_to 0 PX);
+        printf "seconds passed: {}\n" N]
+
+def main =
+    read_lines stdin |> map parse |> [PP -> map [N -> display size N PP] (from_to 0 (uncurry (*) size))];
+    none
+
