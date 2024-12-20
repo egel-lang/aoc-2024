@@ -645,12 +645,12 @@ Marco Devillers
 
     def skip = [N {} -> {} |N {X|XX} -> (map (tuple X) XX |> filter [(P, Q) -> manhattan P Q <= N]) ++ skip N XX]
 
-    def distance = [D (P,Q) -> abs0 ((D::get D P) - (D::get D Q)) - manhattan P Q]
+    def saved = [D (P,Q) -> abs0 ((D::get D P) - (D::get D Q)) - manhattan P Q]
 
     def main =
         read_lines stdin |> map to_chars |> D::from_lists 
         |> [D -> bfs (to_graph D) 0 D::dict {pos 'E' D}]
-        |> [D -> map (distance D) (skip 20 (D::keys D)) |> filter (flip (>=) 100) |> length]
+        |> [D -> map (saved D) (skip 20 (D::keys D)) |> filter (flip (>=) 100) |> length]
 
 ```
 
