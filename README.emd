@@ -125,6 +125,12 @@
 
 {{aoc_day 19}}
 
+## Day 20 
+
+{{code "day20/task2.eg"}}
+
+{{aoc_day 20}}
+
 {{references}}
 
 .hook [XX -> XX ++ {footer}]
