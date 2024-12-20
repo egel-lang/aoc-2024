@@ -1,0 +1,34 @@
+# Advent of Code (AoC) - day 20, task 2
+
+import "prelude.eg"
+
+using System, OS, List, String (to_chars, from_chars), D = Dict
+
+def pos = [C -> do D::to_list |> filter ((==) C . snd) |> head |> fst]
+
+def dirs = {(0,1),(1,0),(0,-1),(-1,0)}
+
+def adj = [D P -> map (add P) dirs |> filter ((/=) '#' . D::get D)]
+
+def to_graph = [D -> foldl [G (P,'#') -> G |G (P,_) -> D::set G P (adj D P)] D::dict (D::to_list D)] 
+
+def bfs = 
+    [G N D {} -> D
+    |G N D PP -> bfs G (N+1) (foldl [D P -> D::set D P N] D PP)
+                             (flatmap (D::get G) PP |> filter (not . D::has D))]
+
+def manhattan = [P Q -> sub P Q |> [(X,Y) -> abs0 X + abs0 Y]]
+
+val diamond = flatmap [X -> map (tuple X) (from_to (-(20-abs0 X)) (20-abs0 X))] (from_to -20 20)
+
+def skip = 
+    [D PP -> foldl [PP P -> map (tuple P) (map (add P) diamond |> filter (D::has D)) ++ PP] {} PP
+               |> unique |> filter [((X0,Y0),(X1,Y1)) -> if X0 < X1 then true else if X0 == X1 then Y0 < Y1 else false]]
+
+def saved = [D (P,Q) -> abs0 ((D::get D P) - (D::get D Q)) - manhattan P Q]
+
+def main =
+    read_lines stdin |> map to_chars |> D::from_lists 
+    |> [D -> bfs (to_graph D) 0 D::dict {pos 'E' D}]
+    |> [D -> map (saved D) (skip D (D::keys D)) |> filter (flip (>=) 100) |> length]
+
