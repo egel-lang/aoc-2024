@@ -678,20 +678,20 @@ Marco Devillers
         |(X,Y) -> if X < 0 then {'^'|buttons (X+1,Y)} else {'v'|buttons (X - 1,Y)}]
 
     def presses =
-        [D (N, T, A, {}) -> 0
-        |D (N, T, A, {B|BB}) -> 
+        [D (N, T, {A}) -> 0
+        |D (N, T, {A,B|BB}) -> 
             let K = (if N==T then numeric else digital) in
             if N == 0 then
                  let M = length (buttons (sub (D::get K B) (D::get K A))) + 1 in
-                 M + D::memo D presses (N, T, B, BB)
+                 M + D::memo D presses (N, T, {B|BB})
             else let PP = permutations (buttons (sub (D::get K B) (D::get K A))) |> unique |> map (flip (++) {'A'}) in
                  let PP = filter [BB -> all (flip elem (D::values K)) (scanl add (D::get K A) (map dirs BB))] PP in
-                 let M = map [BB -> D::memo D presses (N - 1, T, 'A', BB)] PP |> minimum in
-                 M + D::memo D presses (N, T, B, BB) ]
+                 let M = map [BB -> D::memo D presses (N - 1, T, {'A'|BB})] PP |> minimum in
+                 M + D::memo D presses (N, T, {B|BB}) ]
 
     def main =
         read_lines stdin |> map [X -> (to_int X, S::to_chars X)] 
-        |> (let M = D::dict in map [(N, BB) -> (N, presses M (25, 25, 'A', BB))])
+        |> (let M = D::dict in map [(N, BB) -> (N, presses M (25, 25, {'A'|BB}))])
         |> map (uncurry (*)) |> sum
 
 ```
