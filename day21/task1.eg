@@ -1,9 +1,8 @@
-# Advent of Code (AoC) - day 21, task 1
+# Advent of Code (AoC) - day 21, task 2
 
 import "prelude.eg"
 
 using System, OS, List, String (to_chars, from_chars), D = Dict
-
 
 def dirs = ['<' -> (0,-1)|'>' -> (0,1)|'^' -> (-1,0)|'v' -> (1,0)|'A' -> (0,0)]
 
@@ -19,8 +18,6 @@ def buttons =
     |(0,Y) -> if Y < 0 then {'<'|buttons (0,Y+1)} else {'>'|buttons (0,Y - 1)}
     |(X,Y) -> if X < 0 then {'^'|buttons (X+1,Y)} else {'v'|buttons (X - 1,Y)}]
 
-def path = [P PP -> foldl [{P|PP} Q -> {add P Q,P|PP}] {P} PP]
-    
 def presses =
     [D (N, P, A, {}) -> 0
     |D (N, P, A, {B|BB}) -> 
@@ -29,7 +26,7 @@ def presses =
              let M = length (buttons (sub (D::get K B) (D::get K A))) + 1 in
              M + D::memo D presses (N, P, B, BB)
         else let PP = permutations (buttons (sub (D::get K B) (D::get K A))) |> unique |> map [XX -> XX ++ {'A'}] in
-             let PP = filter [BB -> all (flip elem (D::values K)) (path (D::get K A) (map dirs BB))] PP in
+             let PP = filter [BB -> all (flip elem (D::values K)) (scanl add (D::get K A) (map dirs BB))] PP in
              let M = map [BB -> D::memo D presses (N - 1, false, 'A', BB)] PP |> minimum in
              M + D::memo D presses (N, P, B, BB) ]
 
