@@ -1,0 +1,40 @@
+# Advent of Code (AoC) - day 20, task 2
+
+import "prelude.eg"
+
+using System, OS, List, String (to_chars, from_chars), D = Dict
+
+
+def dirs = ['<' -> (0,-1)|'>' -> (0,1)|'^' -> (-1,0)|'v' -> (1,0)|'A' -> (0,0)]
+
+def pos = [C -> do D::to_list |> filter ((==) C . snd) |> head |> fst]
+
+def to_keypad = [XX -> D::from_lists XX |> D::to_list |> map swap |> D::from_list |> flip D::erase ' ']
+
+val numeric = to_keypad {{'7','8','9'},{'4','5','6'},{'1','2','3'},{' ','0','A'}}
+val digital = to_keypad {{' ','^','A'},{'<','v','>'}}
+
+def buttons =
+    [(0,0) -> {}
+    |(0,Y) -> if Y < 0 then {'<'|buttons (0,Y+1)} else {'>'|buttons (0,Y - 1)}
+    |(X,Y) -> if X < 0 then {'^'|buttons (X+1,Y)} else {'v'|buttons (X - 1,Y)}]
+
+def path = [P PP -> foldl [{P|PP} Q -> {add P Q,P|PP}] {P} PP]
+    
+def presses =
+    [D (N, P, A, {}) -> 0
+    |D (N, P, A, {B|BB}) -> 
+        let K = (if P then numeric else digital) in
+        if N == 0 then
+             let M = length (buttons (sub (D::get K B) (D::get K A))) + 1 in
+             M + D::memo D presses (N, P, B, BB)
+        else let PP = permutations (buttons (sub (D::get K B) (D::get K A))) |> unique |> map [XX -> XX ++ {'A'}] in
+             let PP = filter [BB -> all (flip elem (D::values K)) (path (D::get K A) (map dirs BB))] PP in
+             let M = map [BB -> D::memo D presses (N - 1, false, 'A', BB)] PP |> minimum in
+             M + D::memo D presses (N, P, B, BB) ]
+
+def main =
+    read_lines stdin |> map [X -> (to_int X, to_chars X)] 
+    |> (let M = D::dict in map [(N, BB) -> (N, presses M (2, true, 'A', BB))])
+    |> map (uncurry (*)) |> sum
+
