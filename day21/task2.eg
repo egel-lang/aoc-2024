@@ -2,11 +2,9 @@
 
 import "prelude.eg"
 
-using System, OS, List, String (to_chars, from_chars), D = Dict
+using System, OS, List, S = String, D = Dict
 
 def dirs = ['<' -> (0,-1)|'>' -> (0,1)|'^' -> (-1,0)|'v' -> (1,0)|'A' -> (0,0)]
-
-def pos = [C -> do D::to_list |> filter ((==) C . snd) |> head |> fst]
 
 def to_keypad = [XX -> D::from_lists XX |> D::to_list |> map swap |> D::from_list |> flip D::erase ' ']
 
@@ -31,7 +29,7 @@ def presses =
              M + D::memo D presses (N, P, B, BB) ]
 
 def main =
-    read_lines stdin |> map [X -> (to_int X, to_chars X)] 
+    read_lines stdin |> map [X -> (to_int X, S::to_chars X)] 
     |> (let M = D::dict in map [(N, BB) -> (N, presses M (25, true, 'A', BB))])
     |> map (uncurry (*)) |> sum
 

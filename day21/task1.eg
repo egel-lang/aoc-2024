@@ -6,8 +6,6 @@ using System, OS, List, String (to_chars, from_chars), D = Dict
 
 def dirs = ['<' -> (0,-1)|'>' -> (0,1)|'^' -> (-1,0)|'v' -> (1,0)|'A' -> (0,0)]
 
-def pos = [C -> do D::to_list |> filter ((==) C . snd) |> head |> fst]
-
 def to_keypad = [XX -> D::from_lists XX |> D::to_list |> map swap |> D::from_list |> flip D::erase ' ']
 
 val numeric = to_keypad {{'7','8','9'},{'4','5','6'},{'1','2','3'},{' ','0','A'}}
