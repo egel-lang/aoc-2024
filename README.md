@@ -667,7 +667,7 @@ Marco Devillers
 
     def dirs = ['<' -> (0,-1)|'>' -> (0,1)|'^' -> (-1,0)|'v' -> (1,0)|'A' -> (0,0)]
 
-    def to_keypad = [XX -> D::from_lists XX |> D::to_list |> map swap |> D::from_list |> flip D::erase ' ']
+    def to_keypad = do D::from_lists |> D::to_list |> map swap |> D::from_list |> flip D::erase ' '
 
     val numeric = to_keypad {{'7','8','9'},{'4','5','6'},{'1','2','3'},{' ','0','A'}}
     val digital = to_keypad {{' ','^','A'},{'<','v','>'}}
@@ -684,7 +684,7 @@ Marco Devillers
             if N == 0 then
                  let M = length (buttons (sub (D::get K B) (D::get K A))) + 1 in
                  M + D::memo D presses (N, P, B, BB)
-            else let PP = permutations (buttons (sub (D::get K B) (D::get K A))) |> unique |> map [XX -> XX ++ {'A'}] in
+            else let PP = permutations (buttons (sub (D::get K B) (D::get K A))) |> unique |> map (flip (++) {'A'}) in
                  let PP = filter [BB -> all (flip elem (D::values K)) (scanl add (D::get K A) (map dirs BB))] PP in
                  let M = map [BB -> D::memo D presses (N - 1, false, 'A', BB)] PP |> minimum in
                  M + D::memo D presses (N, P, B, BB) ]
