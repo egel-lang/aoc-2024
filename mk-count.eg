@@ -1,0 +1,11 @@
+# Various statistics tool. Cat sources to this program to see tokens on every line.
+
+import "prelude.eg"
+
+using System, OS, List
+
+def main =
+    read_lines stdin |> reduce [S0 S1 -> S0 +"\n" + S1] |> tokenize "" |> map [(X,Y,Z) -> (Y,Z)]
+    |> filter ((/=) "whitespace" . fst) |> map [(X,Y) -> X + " " + Y] |> reduce [S0 S1 -> S0 +"\n" + S1]
+    |> [X -> print X "\n"]
+

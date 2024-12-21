@@ -146,20 +146,20 @@ Marco Devillers
         [D -> foldl [P0 P1 -> if Dict::get D P1 == '^' then P1 else P0] (0,0) (Dict::keys D)]
 
     def track =
-        [D -> trace_while 
+        [D S -> trace_while 
             [(P,N) -> Dict::has D P] 
             [(P,N) -> [Q -> if Dict::has D Q && [_ -> Dict::get D Q == '#'] then (P,(N+1)%4) else (Q,N)] (add (nth N dirs) P)]
-            (start_pos D,0) ]
+            (S,0)]
 
     def loops =
-        [D -> let V = Dict::dict in iter_while
+        [D S -> let V = Dict::dict in iter_while
             [(P,N) -> and (not (Dict::has V (P,N))) (Dict::has D P)] 
             [(P,N) -> Dict::set V (P,N) 0; [Q -> if Dict::has D Q && [_ -> Dict::get D Q == '#'] then (P,(N+1)%4) else (Q,N)] (add (nth N dirs) P)]
-            (start_pos D,0) |> Dict::has V]
+            (S,0) |> Dict::has V]
 
     def solve =
-        [D -> foldl [N P -> if loops (Dict::set (Dict::copy D) P '#') then N+1 else N] 0 
-              (map fst (track D) |> tail |> unique)]
+        [D -> let S = start_pos D in foldl [N P -> if loops (Dict::set (Dict::copy D) P '#') S then N+1 else N] 0 
+              (map fst (track D S) |> tail |> unique)]
 
     def main =
         read_lines stdin |> map to_chars |> Dict::from_lists |> solve
@@ -698,7 +698,31 @@ Marco Devillers
 
 [Day 21](https://adventofcode.com/2024/day/21)
 
-[1] Devillers, Marco. The Egel Language. Github, [Egel Language](https://egel-lang.github.io/),
-    2024.
+## Running times
+
+```
+    day  1 - 141ms | *****
+    day  2 - 409ms | ********
+    day  3 - 113ms | *****
+    day  4 -    2s | ***********
+    day  5 -   40s | ******************
+    day  6 - 13min | ************************
+    day  7 -  2min | ********************
+    day  8 - 368ms | *******
+    day  9 -  4min | *********************
+    day 10 - 767ms | *********
+    day 11 -    4s | *************
+    day 12 -  6min | ***********************
+    day 13 - 170ms | ******
+    day 14 -  2min | ********************
+    day 15 -    3s | ************
+    day 16 -   10s | ***************
+    day 17 - 344ms | *******
+    day 18 - 499ms | ********
+    day 19 -   21s | ****************
+    day 20 -  9min | ***********************
+    day 21 - 368ms | *******
+    -- every five stars is ten times bigger
+```
 
 Copyright 2024 Marco Devillers, MIT licence

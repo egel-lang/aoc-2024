@@ -137,6 +137,10 @@
 
 {{aoc_day 21}}
 
-{{references}}
+## Running times
+
+```
+{{OS::exec "./mk-hist.eg"}}
+```
 
 .hook [XX -> XX ++ {footer}]

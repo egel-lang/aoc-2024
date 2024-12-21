@@ -1,0 +1,25 @@
+#!/usr/local/bin/egel
+
+# Various statistics tool. Give a number to execute a day[n]/task2.eg
+# program and produce a time stamp in ms in that directory.
+
+import "prelude.eg"
+
+using System, List, OS, T = Time
+
+def time =
+    [F -> let T0 = T::now (T::clock none) in 
+          F none; 
+          let T1 = T::now (T::clock none) in format "{}" (T1 - T0)]
+
+def aoc =
+    [D _ -> let D = if D < 10 then "0"+to_text D else D in
+            OS::exec (format "cd day{}; cat input.txt | egel task2.eg" D)]
+
+def stamp =
+    [D S -> let D = if D < 10 then "0"+to_text D else D in
+            OS::exec (format "cd day{}; echo {} > stamp.txt" D S) ]
+
+def main =
+    [{D} -> time (aoc (to_int D)) |> [S -> stamp (to_int D) S; S]
+    |_ -> printf "usage: mk-time n\n"] (tail (tail args))
