@@ -8,7 +8,7 @@ def mask24 = 0xffffff
 
 def step = 
     let F = [F N -> xor24 (and24 (F N) mask24) N] in
-    let A = F [N -> shiftl24 N 6] 'x' in
+    let A = F [N -> shiftl24 N 6] "x" in
     let B = F [N -> shiftr24 N 5] A in
     let C = F [N -> shiftl24 N 11] B in C
 
@@ -18,7 +18,7 @@ def cannonical =
     |(OP X Y) -> OP (cannonical X) (cannonical Y)
     |X -> X]
 
-def sub = [X (OP A B) -> OP (sub X A) (sub X B)|X 'x' -> X|X N -> N]
+def sub = [X (OP A B) -> OP (sub X A) (sub X B)|X "x" -> X|X N -> N]
 
 def eval = 
     [(and24 A B) -> ((eval A)&(eval B))&mask24
@@ -44,6 +44,9 @@ def rewrite = #do later
     |(xor24 A (xor24 B:int C)) -> rewrite (xor24 B (xor24 A C))
     |(xor24 A (xor24 B C)) -> xor24 A (rewrite (xor24 B C))
 
+    |(and24 (rot24 A N) M:int) -> rewrite (rot24 (and24 A (rot24 M (24-N))) N)
+    |(xor24 (rot24 A N) M:int) -> rewrite (rot24 (xor24 A (rot24 M (24-N))) N)
+
     |(rot24 (rot24 A N) M) -> rot24 A ((N+M)%24)
     |(OP (rot24 A N) (rot24 B M)) ->
         if N < M then OP (rewrite (rot24 A N)) (rewrite (rot24 B M))
@@ -52,7 +55,13 @@ def rewrite = #do later
 
     |(OP A B) -> OP (rewrite A) (rewrite B) |N -> N]
 
+def pp =
+    [(and24 A B) -> "(" + pp A + " & " + pp B + ")"
+    |(xor24 A B) -> "(" + pp A + " ^ " + pp B + ")"
+    |(rot24 A B) -> "(" + pp A + " rot " + pp B + ")"
+    |N -> to_text N]
+
 def normalize = [T -> let T0 = rewrite T in if T == T0 then T else normalize T0]
 
-def main = step |> cannonical |> flip apply 123
+def main = step |> cannonical |> normalize |> pp # flip apply 123
 
