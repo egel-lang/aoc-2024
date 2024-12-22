@@ -140,7 +140,7 @@ Marco Devillers
 
     using System, OS, List, String (to_chars, from_chars)
 
-    def dirs = {(-1, 0), (0, 1), (1, 0), (0,-1)}
+    val dirs = {(-1, 0), (0, 1), (1, 0), (0,-1)}
 
     def start_pos = 
         [D -> foldl [P0 P1 -> if Dict::get D P1 == '^' then P1 else P0] (0,0) (Dict::keys D)]
@@ -153,12 +153,12 @@ Marco Devillers
 
     def loops =
         [D S -> let V = Dict::dict in iter_while
-            [(P,N) -> and (not (Dict::has V (P,N))) (Dict::has D P)] 
+            [(P,N) -> (not (Dict::has V (P,N))) && [_ -> (Dict::has D P)]] 
             [(P,N) -> Dict::set V (P,N) 0; [Q -> if Dict::has D Q && [_ -> Dict::get D Q == '#'] then (P,(N+1)%4) else (Q,N)] (add (nth N dirs) P)]
             (S,0) |> Dict::has V]
 
     def solve =
-        [D -> let S = start_pos D in foldl [N P -> if loops (Dict::set (Dict::copy D) P '#') S then N+1 else N] 0 
+        [D -> let S = start_pos D in foldl [N P -> if [B -> Dict::set D P '.';B] (loops (Dict::set D P '#') S) then N+1 else N] 0 
               (map fst (track D S) |> tail |> unique)]
 
     def main =
@@ -706,7 +706,7 @@ Marco Devillers
     day  3 - 113ms | *****
     day  4 -    2s | ***********
     day  5 -   40s | ******************
-    day  6 - 13min | ************************
+    day  6 - 12min | ************************
     day  7 -  2min | ********************
     day  8 - 368ms | *******
     day  9 -  4min | *********************
