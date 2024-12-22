@@ -1,36 +1,58 @@
 # Advent of Code (AoC) - day 22, task 1
 
 import "prelude.eg"
-
 using System, OS, List, D = Dict
 
 data rot24, xor24, and24, shiftl24, shiftr24
-
 def mask24 = 0xffffff
+
 def step = 
-    let F = [F N -> (((F N),and24,mask24),xor24,N)] in
-    let A = F [N -> (N,shiftl24,6)] 'i' in
-    let B = F [N -> (N,shiftr24,5)] A in
-    let C = F [N -> (N,shiftl24,11)] B in C
+    let F = [F N -> xor24 (and24 (F N) mask24) N] in
+    let A = F [N -> shiftl24 N 6] 'x' in
+    let B = F [N -> shiftr24 N 5] A in
+    let C = F [N -> shiftl24 N 11] B in C
 
 def cannonical =
-    [(X,shiftl24,N) -> let X = cannonical X in ((X,rot24,N),and24,(mask24<<N))
-    |(X,shiftr24,N) -> let X = cannonical X in ((X,rot24,24 - N),and24,(mask24>>N))
-    |(X,OP,Y) -> (cannonical X, OP, cannonical Y)
+    [(shiftl24 X N) -> let X = cannonical X in and24 (rot24 X N) (mask24<<N)
+    |(shiftr24 X N) -> let X = cannonical X in and24 (rot24 X (24 - N)) (mask24>>N)
+    |(OP X Y) -> OP (cannonical X) (cannonical Y)
     |X -> X]
 
-def sub = [I (A,OP,B) -> (sub I A,OP,sub I B) |I 'i' -> I | I N -> N]
+def sub = [X (OP A B) -> OP (sub X A) (sub X B)|X 'x' -> X|X N -> N]
 
 def eval = 
-    [(A,and24,B) -> ((eval A)&(eval B))&mask24
-    |(A,xor24,B) -> ((eval A)^(eval B))&mask24
-    |(A,rot24,N) -> let A = eval A in ((A << N) $ ((A >> (24 - N)) & mask24))
+    [(and24 A B) -> ((eval A)&(eval B))&mask24
+    |(xor24 A B) -> ((eval A)^(eval B))&mask24
+    |(rot24 A N) -> let A = eval A in ((A << N) $ ((A >> (24 - N)) & mask24))
     |N -> N]
 
-def apply = [N T -> eval (sub N T)]
+def apply = [T N -> eval (sub N T)]
 
-def normalize = #do later
-    [(A,and24,B) -> 0]
+def rewrite = #do later
+    [(OP A:int B:int) -> eval (OP A B)
 
-def main = step |> cannonical |> apply 123
+    |(and24 A (xor24 B C)) -> rewrite (xor24 (and24 A B) (and24 A C))
+    |(and24 (xor24 B C) A) -> rewrite (xor24 (and24 A B) (and24 A C))
+
+    |(and24 (and24 A B) C) -> rewrite (and24 A (and24 B C))
+    |(and24 A:int (and24 B:int C)) -> rewrite (and24 (eval(and24 A B)) C)
+    |(and24 A (and24 B:int C)) -> rewrite (and24 B (and24 A C))
+    |(and24 A (and24 B C)) -> and24 A (rewrite (and24 B C))
+
+    |(xor24 (xor24 A B) C) -> rewrite (xor24 A (xor24 B C))
+    |(xor24 A:int (xor24 B:int C)) -> rewrite (xor24 (eval(xor24 A B)) C)
+    |(xor24 A (xor24 B:int C)) -> rewrite (xor24 B (xor24 A C))
+    |(xor24 A (xor24 B C)) -> xor24 A (rewrite (xor24 B C))
+
+    |(rot24 (rot24 A N) M) -> rot24 A ((N+M)%24)
+    |(OP (rot24 A N) (rot24 B M)) ->
+        if N < M then OP (rewrite (rot24 A N)) (rewrite (rot24 B M))
+        else if N == M then rewrite (rot24 (OP A B) N)
+        else OP (rewrite (rot24 B M)) (rewrite (rot24 A N))
+
+    |(OP A B) -> OP (rewrite A) (rewrite B) |N -> N]
+
+def normalize = [T -> let T0 = rewrite T in if T == T0 then T else normalize T0]
+
+def main = step |> cannonical |> flip apply 123
 
