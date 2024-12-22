@@ -1,4 +1,4 @@
-# Advent of Code (AoC) - day 21, task 2
+# Advent of Code (AoC) - day 22, task 2
 
 import "prelude.eg"
 
@@ -16,7 +16,7 @@ def group =
     |_ -> {}]
 
 def prices = 
-    do trace 2000 step N |> map (flip (%) 10) 
+    do trace 2000 step |> map (flip (%) 10) 
     |> [XX -> zip (tail XX) (zip_with (-) (tail XX) XX)]
     |> group
 
