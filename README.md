@@ -698,6 +698,40 @@ Marco Devillers
 
 [Day 21](https://adventofcode.com/2024/day/21)
 
+## Day 22 
+
+```
+    # Advent of Code (AoC) - day 22, task 2
+
+    import "prelude.eg"
+
+    using System, OS, List, D = Dict
+
+    def step =
+        [N -> let F = [G N -> ((G N)^N)%16777216] in F ((*) 64) N |> F ((flip (/) 32)) |> F ((*)2048)]
+
+    def trace = [0 F X -> {} |N F X -> {X|trace (N - 1) F (F X)}] 
+
+    def group =
+        [{(I,A),(J,B),(K,C),(L,D)|XX} -> {({A,B,C,D},L)|group {(J,B),(K,C),(L,D)|XX}}
+        |_ -> {}]
+
+    def prices = 
+        do trace 2000 step |> map (flip (%) 10) |> [XX -> zip (tail XX) (zip_with (-) (tail XX) XX)]
+
+    def count = [D XX ->
+        foldl [D XX -> let V = D::dict in 
+              foldl [D (T,N) -> if D::has V T then D else D::set V T 0; D::set_with D (+) T N] D XX]
+        D XX]     
+
+    def main =
+        read_lines stdin |> map to_int |> map prices |> map group 
+        |> count D::dict |> D::values |> maximum
+
+```
+
+[Day 22](https://adventofcode.com/2024/day/22)
+
 ## Running times
 
 ```
@@ -722,6 +756,7 @@ Marco Devillers
     day 19 -   21s | ****************
     day 20 -  9min | ***********************
     day 21 - 368ms | *******
+    day 22 -  4min | **********************
     -- every five stars is ten times bigger
 ```
 
