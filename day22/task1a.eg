@@ -34,6 +34,8 @@ def rewrite = #do later
     |(and24 A (xor24 B C)) -> rewrite (xor24 (and24 A B) (and24 A C))
     |(and24 (xor24 B C) A) -> rewrite (xor24 (and24 A B) (and24 A C))
 
+    |(xor24 (rot24 A N) M) -> rewrite (rot24 (xor24 A (rot24 M (24-N))) N)
+
     |(and24 (and24 A B) C) -> rewrite (and24 A (and24 B C))
     |(and24 A:int (and24 B:int C)) -> rewrite (and24 (eval(and24 A B)) C)
     |(and24 A (and24 B:int C)) -> rewrite (and24 B (and24 A C))
@@ -45,7 +47,6 @@ def rewrite = #do later
     |(xor24 A (xor24 B C)) -> xor24 A (rewrite (xor24 B C))
 
     |(and24 (rot24 A N) M:int) -> rewrite (rot24 (and24 A (rot24 M (24-N))) N)
-    |(xor24 (rot24 A N) M:int) -> rewrite (rot24 (xor24 A (rot24 M (24-N))) N)
 
     |(rot24 (rot24 A N) M) -> rot24 A ((N+M)%24)
     |(OP (rot24 A N) (rot24 B M)) ->
@@ -53,7 +54,7 @@ def rewrite = #do later
         else if N == M then rewrite (rot24 (OP A B) N)
         else OP (rewrite (rot24 B M)) (rewrite (rot24 A N))
 
-    |(OP A B) -> OP (rewrite A) (rewrite B) |N -> N]
+    |(OP A B) -> print (pp (OP A B)) "\n"; OP (rewrite A) (rewrite B) |N -> N]
 
 def pp =
     [(and24 A B) -> "(" + pp A + " & " + pp B + ")"
