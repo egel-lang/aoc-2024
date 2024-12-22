@@ -713,7 +713,7 @@ Marco Devillers
     def trace = [0 F X -> {} |N F X -> {X|trace (N - 1) F (F X)}] 
 
     def group =
-        [{(I,A),(J,B),(K,C),(L,D)|XX} -> {({A,B,C,D},L)|group {(J,B),(K,C),(L,D)|XX}}
+        [{(I,A),(J,B),(K,C),(L,D)|XX} -> {((A,B,C,D),L)|group {(J,B),(K,C),(L,D)|XX}}
         |_ -> {}]
 
     def prices = 
@@ -756,7 +756,7 @@ Marco Devillers
     day 19 -   21s | ****************
     day 20 -  9min | ***********************
     day 21 - 368ms | *******
-    day 22 -  4min | **********************
+    day 22 -  2min | *********************
     -- every five stars is ten times bigger
 ```
 

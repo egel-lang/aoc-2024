@@ -10,7 +10,7 @@ def step =
 def trace = [0 F X -> {} |N F X -> {X|trace (N - 1) F (F X)}] 
 
 def group =
-    [{(I,A),(J,B),(K,C),(L,D)|XX} -> {({A,B,C,D},L)|group {(J,B),(K,C),(L,D)|XX}}
+    [{(I,A),(J,B),(K,C),(L,D)|XX} -> {((A,B,C,D),L)|group {(J,B),(K,C),(L,D)|XX}}
     |_ -> {}]
 
 def prices = 
