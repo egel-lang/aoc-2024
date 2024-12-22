@@ -19,14 +19,18 @@ def cannonical =
     |(X,OP,Y) -> (cannonical X, OP, cannonical Y)
     |X -> X]
 
+def sub = [I (A,OP,B) -> (sub I A,OP,sub I B) |I 'i' -> I | I N -> N]
+
 def eval = 
-    [I (A,and24,B) -> ((eval I A)&(eval I B))&mask24
-    |I (A,xor24,B) -> ((eval I A)^(eval I B))&mask24
-    |I (A,rot24,N) -> let A = eval I A in ((A << N) $ ((A >> (24 - N)) & mask24))
-    |I 'i' -> I | I N -> N]
+    [(A,and24,B) -> ((eval A)&(eval B))&mask24
+    |(A,xor24,B) -> ((eval A)^(eval B))&mask24
+    |(A,rot24,N) -> let A = eval A in ((A << N) $ ((A >> (24 - N)) & mask24))
+    |N -> N]
+
+def apply = [N T -> eval (sub N T)]
 
 def normalize = #do later
     [(A,and24,B) -> 0]
 
-def main = step |> cannonical |> eval 123
+def main = step |> cannonical |> apply 123
 
