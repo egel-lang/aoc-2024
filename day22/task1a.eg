@@ -1,0 +1,32 @@
+# Advent of Code (AoC) - day 22, task 1
+
+import "prelude.eg"
+
+using System, OS, List, D = Dict
+
+data rot24, xor24, and24, shiftl24, shiftr24
+
+def mask24 = 0xffffff
+def step = 
+    let F = [F N -> (((F N),and24,mask24),xor24,N)] in
+    let A = F [N -> (N,shiftl24,6)] 'i' in
+    let B = F [N -> (N,shiftr24,5)] A in
+    let C = F [N -> (N,shiftl24,11)] B in C
+
+def cannonical =
+    [(X,shiftl24,N) -> let X = cannonical X in ((X,rot24,N),and24,(mask24<<N))
+    |(X,shiftr24,N) -> let X = cannonical X in ((X,rot24,24 - N),and24,(mask24>>N))
+    |(X,OP,Y) -> (cannonical X, OP, cannonical Y)
+    |X -> X]
+
+def eval = 
+    [I (A,and24,B) -> ((eval I A)&(eval I B))&mask24
+    |I (A,xor24,B) -> ((eval I A)^(eval I B))&mask24
+    |I (A,rot24,N) -> let A = eval I A in ((A << N) $ ((A >> (24 - N)) & mask24))
+    |I 'i' -> I | I N -> N]
+
+def normalize = #do later
+    [(A,and24,B) -> 0]
+
+def main = step |> cannonical |> eval 123
+
