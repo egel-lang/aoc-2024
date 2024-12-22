@@ -1,0 +1,14 @@
+# Advent of Code (AoC) - day 21, task 2
+
+import "prelude.eg"
+
+using System, OS, List, D = Dict
+
+
+def step =
+    [N -> let F = [G N -> ((G N)^N)%16777216] in
+        F ((*) 64) N |> F ((flip (/) 32)) |> F ((*)2048)]
+
+def main =
+    read_lines stdin |> map to_int |> map (iter 2000 step) |> sum
+
