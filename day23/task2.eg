@@ -2,7 +2,7 @@
 
 import "prelude.eg"
 
-using System, OS, List, S = String, D = Dict
+using System, OS, List, D = Dict
 
 def graph = 
     let F = [D V0 V1 -> D::set_with D [XX YY -> unique (XX++YY)] V0 {V1}] in
@@ -25,7 +25,7 @@ def bron_kerbosch0 =
 def bron_kerbosch = [G -> bron_kerbosch0 G ({},vertices G,{},{}) |> proj 3]
     
 def main =
-    read_lines stdin |> map (Regex::matches (Regex::compile "[a-z0-9]+")) |> map list_to_tuple
-    |> graph |> [G -> bron_kerbosch G] |> sort_by [XX YY -> length XX > length YY]
-    |> head |> sort |> reduce [S0 S1 -> S0 + "," + S1]
+    read_lines stdin |> map (Regex::matches (Regex::compile "[a-z]+")) |> map list_to_tuple
+    |> graph |> bron_kerbosch |> sort_by [XX YY -> length XX > length YY] |> head 
+    |> sort |> reduce [S0 S1 -> S0 + "," + S1]
 
