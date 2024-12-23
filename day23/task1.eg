@@ -1,0 +1,22 @@
+# Advent of Code (AoC) - day 23, task 1
+
+import "prelude.eg"
+
+using System, OS, List, S = String, D = Dict
+
+def graph = 
+    let F = [D V0 V1 -> D::set_with D (++) V0 {V1}] in
+    foldl [D (V0,V1) -> F (F D V0 V1) V1 V0] Dict::dict
+
+def adj = D::get_with_default {}
+
+def grow =
+    [G -> do flatmap [VV ->
+        (flatmap (map [V -> if all (flip elem (adj G V)) VV  then unique {V|VV}  else none]))
+        (map (adj G) VV)] |> unique |> filter ((/=) none)]
+
+def main =
+    read_lines stdin |> map (Regex::matches (Regex::compile "[a-z]+")) |> map list_to_tuple
+    |> graph |> [G -> iter 2 (grow G) (map singleton (D::keys G))]
+    |> filter (any (S::starts_with "t")) |> length
+

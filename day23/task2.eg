@@ -1,0 +1,31 @@
+# Advent of Code (AoC) - day 23, task 2
+
+import "prelude.eg"
+
+using System, OS, List, S = String, D = Dict
+
+def graph = 
+    let F = [D V0 V1 -> D::set_with D [XX YY -> unique (XX++YY)] V0 {V1}] in
+    foldl [D (V0,V1) -> F (F D V0 V1) V1 V0] Dict::dict
+
+def adj = D::get_with_default {}
+def vertices = D::keys
+
+def bron_kerbosch0 =
+    [G (R,{},{}, RR) -> (R,{},{},{R}++RR) 
+    |G (R, P, X, RR) -> 
+        foldl
+        [(R,P,X,RR) V ->
+            let R0 = union {V} R in
+            let P0 = intersection P (adj G V) in
+            let X0 = intersection X (adj G V) in
+            let (_,_,_,RR) = bron_kerbosch0 G (R0,P0,X0,RR) in
+                (R, difference P {V}, union X {V}, RR)] (R,P,X,RR) P]
+
+def bron_kerbosch = [G -> bron_kerbosch0 G ({},vertices G,{},{}) |> proj 3]
+    
+def main =
+    read_lines stdin |> map (Regex::matches (Regex::compile "[a-z0-9]+")) |> map list_to_tuple
+    |> graph |> [G -> bron_kerbosch G] |> sort_by [XX YY -> length XX > length YY]
+    |> head |> sort |> reduce [S0 S1 -> S0 + "," + S1]
+

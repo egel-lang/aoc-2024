@@ -28,13 +28,41 @@ def eval =
 
 def apply = [T N -> eval (sub N T)]
 
+# we know we can construct a matrix M for `step` and raise that to 2000.
+# does that coincide with a normalizing strategy for terms on Xor/And/Rot?
+
+# idea: given two terms in AoC normal form make sure that the operations
+# return a term in normal form...
+
+# rotation is pushed to the bottom
+def rotnf =
+    [A:int N-> eval (rot24 A B)
+    |(rot24 A M) N -> rot24 A ((N+M)%24)
+    |(and24 A B) N -> and24 (rotnf A N) (rotnf B N)
+    |(xor24 A B) N -> xor24 (rotnf A N) (rotnf B N)
+    |X N -> rot24 X N]
+
+# xor stays at the top
+def xornf =
+    [A:int B:int -> eval (xor24 A B)
+    |A:int (xor24 B:int C) -> xornf (eval(xor24 A B)) C
+    |A (xor24 B:int C)) -> xornf B (xornf A C) # XXX
+    |(xor24 A B) C -> xornf A (xor24 B C))
+    |A (xor24 B C)) -> xor24 A (rewrite (xor24 B C))
+
+# conjunction is pushed under the xor
+def andnf =
+    [A:int B:int -> eval (and24 A B)
+    |(xor24 B C) A -> xornf (andnf A B) (andnf A C)
+    |A (xor24 B C) -> xornf (andnf A B) (andnf A C)
+    
 def rewrite = #do later
     [(OP A:int B:int) -> eval (OP A B)
 
     |(and24 A (xor24 B C)) -> rewrite (xor24 (and24 A B) (and24 A C))
     |(and24 (xor24 B C) A) -> rewrite (xor24 (and24 A B) (and24 A C))
 
-    |(xor24 (rot24 A N) M) -> rewrite (rot24 (xor24 A (rot24 M (24-N))) N)
+    #|(xor24 (rot24 A N) M) -> rewrite (rot24 (xor24 A (rot24 M (24-N))) N)
 
     |(and24 (and24 A B) C) -> rewrite (and24 A (and24 B C))
     |(and24 A:int (and24 B:int C)) -> rewrite (and24 (eval(and24 A B)) C)
@@ -46,7 +74,7 @@ def rewrite = #do later
     |(xor24 A (xor24 B:int C)) -> rewrite (xor24 B (xor24 A C))
     |(xor24 A (xor24 B C)) -> xor24 A (rewrite (xor24 B C))
 
-    |(and24 (rot24 A N) M:int) -> rewrite (rot24 (and24 A (rot24 M (24-N))) N)
+    #|(and24 (rot24 A N) M:int) -> rewrite (rot24 (and24 A (rot24 M (24-N))) N)
 
     |(rot24 (rot24 A N) M) -> rot24 A ((N+M)%24)
     |(OP (rot24 A N) (rot24 B M)) ->

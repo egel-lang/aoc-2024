@@ -1,0 +1,28 @@
+# Advent of Code (AoC) - day 23, task 2
+
+import "prelude.eg"
+
+using System, OS, List, S = String, D = Dict
+
+def graph = 
+    let F = [D V0 V1 -> D::set_with D [XX YY -> unique (XX++YY)] V0 {V1}] in
+    foldl [D (V0,V1) -> F (F D V0 V1) V1 V0] Dict::dict
+
+def adj = D::get_with_default {}
+
+def kosajaru =
+    [G ->
+        let S = Dict::dict in
+        let VV = foldl [VV V -> if D::has S V then VV else dfs G V S VV] {} (D::keys G) in 
+        let S = Dict::dict in
+        let CC = foldl [CC V -> if D::has S V then CC else {dfs G V S {}|CC}] {} VV in
+            CC]
+
+def dfs =
+    [G V0 S VV -> D::set S V0 0; {V0|foldl [VV V1 -> if D::has S V1 then VV else dfs G V1 S VV] VV (adj G V0)}]
+
+def main =
+    read_lines stdin |> map (Regex::matches (Regex::compile "[a-z]+")) |> map list_to_tuple
+    |> graph |> [G -> kosajaru G] 
+    #|> head |> reduce [S0 S1 -> S0 + "," + S1]
+
