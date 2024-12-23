@@ -143,6 +143,12 @@
 
 {{aoc_day 22}}
 
+## Day 23 
+
+{{code "day23/task2.eg"}}
+
+{{aoc_day 23}}
+
 ## Running times
 
 ```

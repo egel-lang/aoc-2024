@@ -713,7 +713,7 @@ Marco Devillers
     def trace = [0 F X -> {} |N F X -> {X|trace (N - 1) F (F X)}] 
 
     def group =
-        [{(I,A),(J,B),(K,C),(L,D)|XX} -> {((A,B,C,D),L)|group {(J,B),(K,C),(L,D)|XX}}
+        [{(I,A),(J,B),(K,C),(L,D)|XX} -> {((A << 12) + (B << 8) + (C << 4) + D,L)|group {(J,B),(K,C),(L,D)|XX}}
         |_ -> {}]
 
     def prices = 
@@ -731,6 +731,44 @@ Marco Devillers
 ```
 
 [Day 22](https://adventofcode.com/2024/day/22)
+
+## Day 23 
+
+```
+    # Advent of Code (AoC) - day 23, task 2
+
+    import "prelude.eg"
+
+    using System, OS, List, D = Dict
+
+    def graph = 
+        let F = [D V0 V1 -> D::set_with D [XX YY -> unique (XX++YY)] V0 {V1}] in
+        foldl [D (V0,V1) -> F (F D V0 V1) V1 V0] Dict::dict
+
+    def adj = D::get_with_default {}
+    def vertices = D::keys
+
+    def bron_kerbosch0 =
+        [G (R,{},{}, RR) -> (R,{},{},{R}++RR) 
+        |G (R, P, X, RR) -> 
+            foldl
+            [(R,P,X,RR) V ->
+                let R0 = union {V} R in
+                let P0 = intersection P (adj G V) in
+                let X0 = intersection X (adj G V) in
+                let (_,_,_,RR) = bron_kerbosch0 G (R0,P0,X0,RR) in
+                    (R, difference P {V}, union X {V}, RR)] (R,P,X,RR) P]
+
+    def bron_kerbosch = [G -> bron_kerbosch0 G ({},vertices G,{},{}) |> proj 3]
+
+    def main =
+        read_lines stdin |> map (Regex::matches (Regex::compile "[a-z]+")) |> map list_to_tuple
+        |> graph |> bron_kerbosch |> sort_by [XX YY -> length XX > length YY] |> head 
+        |> sort |> reduce [S0 S1 -> S0 + "," + S1]
+
+```
+
+[Day 23](https://adventofcode.com/2024/day/23)
 
 ## Running times
 
@@ -757,6 +795,7 @@ Marco Devillers
     day 20 -  9min | ***********************
     day 21 - 368ms | *******
     day 22 -  2min | *********************
+    day 23 -   53s | ******************
     -- every five stars is ten times bigger
 ```
 
