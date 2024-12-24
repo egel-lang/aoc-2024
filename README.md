@@ -138,31 +138,31 @@ Marco Devillers
 
     import "prelude.eg"
 
-    using System, OS, List, String (to_chars, from_chars)
+    using System, OS, List, String (to_chars, from_chars), D = Dict
 
     val dirs = {(-1, 0), (0, 1), (1, 0), (0,-1)}
 
     def start_pos = 
-        [D -> foldl [P0 P1 -> if Dict::get D P1 == '^' then P1 else P0] (0,0) (Dict::keys D)]
+        [D -> foldl [P0 P1 -> if D::get D P1 == '^' then P1 else P0] (0,0) (D::keys D)]
 
     def track =
         [D S -> trace_while 
-            [(P,N) -> Dict::has D P] 
-            [(P,N) -> [Q -> if Dict::has D Q && [_ -> Dict::get D Q == '#'] then (P,(N+1)%4) else (Q,N)] (add (nth N dirs) P)]
+            [(P,N) -> D::has D P] 
+            [(P,N) -> [Q -> if D::has D Q && [_ -> D::get D Q == '#'] then (P,(N+1)%4) else (Q,N)] (add (nth N dirs) P)]
             (S,0)]
 
     def loops =
-        [D S -> let V = Dict::dict in iter_while
-            [(P,N) -> (not (Dict::has V (P,N))) && [_ -> (Dict::has D P)]] 
-            [(P,N) -> Dict::set V (P,N) 0; [Q -> if Dict::has D Q && [_ -> Dict::get D Q == '#'] then (P,(N+1)%4) else (Q,N)] (add (nth N dirs) P)]
-            (S,0) |> Dict::has V]
+        [D S -> let V = D::dict in iter_while
+            [(P,N) -> (not (D::has V (P,N))) && [_ -> (D::has D P)]] 
+            [(P,N) -> D::set V (P,N) 0; [Q -> if D::has D Q && [_ -> D::get D Q == '#'] then (P,(N+1)%4) else (Q,N)] (add (nth N dirs) P)]
+            (S,0) |> D::has V]
 
     def solve =
-        [D -> let S = start_pos D in foldl [N P -> if [B -> Dict::set D P '.';B] (loops (Dict::set D P '#') S) then N+1 else N] 0 
+        [D -> let S = start_pos D in foldl [N P -> if [B -> D::set D P '.';B] (loops (D::set D P '#') S) then N+1 else N] 0 
               (map fst (track D S) |> tail |> unique)]
 
     def main =
-        read_lines stdin |> map to_chars |> Dict::from_lists |> solve
+        read_lines stdin |> map to_chars |> D::from_lists |> solve
 
 ```
 
@@ -354,7 +354,7 @@ Marco Devillers
 
     import "prelude.eg"
 
-    using System, OS, List, String (to_chars, from_chars)
+    using System, OS, List
 
     def parse = do Regex::matches (Regex::compile "[0-9]+") |> map to_int |> list_to_tuple
 
@@ -472,7 +472,7 @@ Marco Devillers
     def dijkstra0 = 
         [ G {} (D0,D1) -> (D0,D1)
         | G {(N,P)|QQ} (D0,D1) ->
-            let ADJ = Dict::get G P in
+            let ADJ = D::get G P in
             let (D0,D1,QQ) = foldl [(D0,D1,QQ) (M,Q) ->
                             let ALT = N + M in
                             if ALT < D::get_with_default max_int D0 Q then 
@@ -502,7 +502,7 @@ Marco Devillers
         |> [D -> let S = pos 'S' D in let E = pos 'E' D in
             to_graph D |> [G -> dijkstra G (S,(0,1))]
             |> [(D0,D1) -> 
-                   map [P -> (Dict::get_with_default max_int D0 P,P)] (map (tuple E) dirs)
+                   map [P -> (D::get_with_default max_int D0 P,P)] (map (tuple E) dirs)
                    |> [PP -> filter ((==) (minimum (map fst PP)) . fst) PP |> map snd]
                    |> nodes D1 {} ]
             |> map fst |> unique |> length]
@@ -557,7 +557,7 @@ Marco Devillers
 
     import "prelude.eg"
 
-    using System, OS, List, String (to_chars, from_chars), D = Dict
+    using System, OS, List, D = Dict
 
     def dirs = {(0,1),(1,0),(0,-1),(-1,0)}
 
@@ -743,7 +743,7 @@ Marco Devillers
 
     def graph = 
         let F = [D V0 V1 -> D::set_with D [XX YY -> unique (XX++YY)] V0 {V1}] in
-        foldl [D (V0,V1) -> F (F D V0 V1) V1 V0] Dict::dict
+        foldl [D (V0,V1) -> F (F D V0 V1) V1 V0] D::dict
 
     def adj = D::get_with_default {}
     def vertices = D::keys
