@@ -23,7 +23,7 @@ def log10 = [N -> Math::log10 (to_float N)]
 def line = [(D,T,S) -> format "    day {:2} - {:>5} | {}\n" D S (stars ((to_int ((log10 T - 1.) *5.))))]
 
 def main =
-    [{} -> map [D -> (D, stamp D)] (from_to 1 23) |> map (proj_update 1 to_int)
+    [{} -> map [D -> (D, stamp D)] (from_to 1 24) |> map (proj_update 1 to_int)
         |> map [(D,T) -> (D,T, to_time T)] |> map line |> flip (++) {"    -- every five stars is ten times bigger"}
         |> reduce (+) |> [X -> print X]
     |_ -> printf "usage: mk-hist.eg\n"] (tail (tail args))
