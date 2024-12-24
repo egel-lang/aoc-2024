@@ -2,29 +2,29 @@
 
 import "prelude.eg"
 
-using System, OS, List, String (to_chars, from_chars)
+using System, OS, List, String (to_chars, from_chars), D = Dict
 
 val dirs = {(-1, 0), (0, 1), (1, 0), (0,-1)}
 
 def start_pos = 
-    [D -> foldl [P0 P1 -> if Dict::get D P1 == '^' then P1 else P0] (0,0) (Dict::keys D)]
+    [D -> foldl [P0 P1 -> if D::get D P1 == '^' then P1 else P0] (0,0) (D::keys D)]
 
 def track =
     [D S -> trace_while 
-        [(P,N) -> Dict::has D P] 
-        [(P,N) -> [Q -> if Dict::has D Q && [_ -> Dict::get D Q == '#'] then (P,(N+1)%4) else (Q,N)] (add (nth N dirs) P)]
+        [(P,N) -> D::has D P] 
+        [(P,N) -> [Q -> if D::has D Q && [_ -> D::get D Q == '#'] then (P,(N+1)%4) else (Q,N)] (add (nth N dirs) P)]
         (S,0)]
 
 def loops =
-    [D S -> let V = Dict::dict in iter_while
-        [(P,N) -> (not (Dict::has V (P,N))) && [_ -> (Dict::has D P)]] 
-        [(P,N) -> Dict::set V (P,N) 0; [Q -> if Dict::has D Q && [_ -> Dict::get D Q == '#'] then (P,(N+1)%4) else (Q,N)] (add (nth N dirs) P)]
-        (S,0) |> Dict::has V]
+    [D S -> let V = D::dict in iter_while
+        [(P,N) -> (not (D::has V (P,N))) && [_ -> (D::has D P)]] 
+        [(P,N) -> D::set V (P,N) 0; [Q -> if D::has D Q && [_ -> D::get D Q == '#'] then (P,(N+1)%4) else (Q,N)] (add (nth N dirs) P)]
+        (S,0) |> D::has V]
 
 def solve =
-    [D -> let S = start_pos D in foldl [N P -> if [B -> Dict::set D P '.';B] (loops (Dict::set D P '#') S) then N+1 else N] 0 
+    [D -> let S = start_pos D in foldl [N P -> if [B -> D::set D P '.';B] (loops (D::set D P '#') S) then N+1 else N] 0 
           (map fst (track D S) |> tail |> unique)]
       
 def main =
-    read_lines stdin |> map to_chars |> Dict::from_lists |> solve
+    read_lines stdin |> map to_chars |> D::from_lists |> solve
 

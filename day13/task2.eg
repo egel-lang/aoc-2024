@@ -2,7 +2,7 @@
 
 import "prelude.eg"
 
-using System, OS, List, String (to_chars, from_chars)
+using System, OS, List
 
 def parse = do Regex::matches (Regex::compile "[0-9]+") |> map to_int |> list_to_tuple
 

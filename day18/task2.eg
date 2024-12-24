@@ -2,7 +2,7 @@
 
 import "prelude.eg"
 
-using System, OS, List, String (to_chars, from_chars), D = Dict
+using System, OS, List, D = Dict
 
 def dirs = {(0,1),(1,0),(0,-1),(-1,0)}
 

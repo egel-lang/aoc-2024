@@ -6,7 +6,7 @@ using System, OS, List, D = Dict
 
 def graph = 
     let F = [D V0 V1 -> D::set_with D [XX YY -> unique (XX++YY)] V0 {V1}] in
-    foldl [D (V0,V1) -> F (F D V0 V1) V1 V0] Dict::dict
+    foldl [D (V0,V1) -> F (F D V0 V1) V1 V0] D::dict
 
 def adj = D::get_with_default {}
 def vertices = D::keys

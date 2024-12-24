@@ -15,7 +15,7 @@ def insort = [P {} -> {P}|P {Q|QQ} -> if proj 0 P <= proj 0 Q then {P,Q|QQ} else
 def dijkstra0 = 
     [ G {} (D0,D1) -> (D0,D1)
     | G {(N,P)|QQ} (D0,D1) ->
-        let ADJ = Dict::get G P in
+        let ADJ = D::get G P in
         let (D0,D1,QQ) = foldl [(D0,D1,QQ) (M,Q) ->
                         let ALT = N + M in
                         if ALT < D::get_with_default max_int D0 Q then 
@@ -45,7 +45,7 @@ def main =
     |> [D -> let S = pos 'S' D in let E = pos 'E' D in
         to_graph D |> [G -> dijkstra G (S,(0,1))]
         |> [(D0,D1) -> 
-               map [P -> (Dict::get_with_default max_int D0 P,P)] (map (tuple E) dirs)
+               map [P -> (D::get_with_default max_int D0 P,P)] (map (tuple E) dirs)
                |> [PP -> filter ((==) (minimum (map fst PP)) . fst) PP |> map snd]
                |> nodes D1 {} ]
         |> map fst |> unique |> length]
