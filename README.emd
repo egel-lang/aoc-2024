@@ -167,4 +167,10 @@
 {{OS::exec "./mk-hist.eg"}}
 ```
 
+## Line, word, and character count
+
+```
+{{OS::exec "./mk-wc.eg"}}
+```
+
 .hook [XX -> XX ++ {footer}]

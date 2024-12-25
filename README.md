@@ -862,4 +862,34 @@ Advent of Code [day 25](https://adventofcode.com/2024/day/25).
     -- every five stars is ten times bigger
 ```
 
+## Line, word, and character count
+
+```
+    day  1 -   13   56   342
+    day  2 -   20   87   493
+    day  3 -   21   85   511
+    day  4 -   14   75   460
+    day  5 -   16  101   511
+    day  6 -   30  203  1024
+    day  7 -   18   90   473
+    day  8 -   25  135   683
+    day  9 -   26  143   837
+    day 10 -   18   93   539
+    day 11 -   18   99   536
+    day 12 -   32  201  1031
+    day 13 -   20  118   629
+    day 14 -   28  169   929
+    day 15 -   36  314  1447
+    day 16 -   52  334  1974
+    day 17 -   32  238  1279
+    day 18 -   37  271  1334
+    day 19 -   18  117   558
+    day 20 -   30  220  1045
+    day 21 -   35  255  1439
+    day 22 -   27  169   811
+    day 23 -   31  173  1008
+    day 24 -   41  419  1896
+    totals -  638 4165 21789
+```
+
 Copyright 2024 Marco Devillers, MIT licence
