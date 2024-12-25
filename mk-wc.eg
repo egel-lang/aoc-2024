@@ -1,7 +1,7 @@
 #!/usr/local/bin/egel
 
 # Various statistics tool. Take all stamps in directories holding
-# execution time and produce an histogram.
+# execution time and produce a histogram.
 
 import "prelude.eg"
 
