@@ -10,9 +10,6 @@ Marco Devillers
     import "prelude.eg"
     using System, OS, List
 
-    def input =
-        let L = read_line stdin in if eof stdin then {} else {L | input}
-
     def parse = 
         do Regex::matches (Regex::compile "[0-9]+") |> map to_int
 
@@ -20,7 +17,7 @@ Marco Devillers
         do map Dict::count |> reduce Dict::inner_join |> Dict::to_list
 
     def main =
-        input |> map parse |> transpose |> tally |> map [(X,(Y,Z)) -> X*Y*Z] |> sum
+        read_lines stdin |> map parse |> transpose |> tally |> map [(X,(Y,Z)) -> X*Y*Z] |> sum
 ```
 
 Advent of Code [day 1](https://adventofcode.com/2024/day/1).
@@ -34,9 +31,6 @@ Advent of Code [day 1](https://adventofcode.com/2024/day/1).
 
     using System, OS, List
 
-    def input =
-        let L = read_line stdin in if eof stdin then {} else {L | input}
-
     def parse = 
         do Regex::matches (Regex::compile "[0-9]+")  |> map to_int
 
@@ -49,7 +43,7 @@ Advent of Code [day 1](https://adventofcode.com/2024/day/1).
         [ XX -> zip_with (++) (inits XX) (tail (tails XX)) ]
 
     def main =
-        input |> map parse |> map dampened |> map (any safe) 
+        read_lines stdin |> map parse |> map dampened |> map (any safe) 
               |> filter id |> length
 ```
 
@@ -63,9 +57,6 @@ Advent of Code [day 2](https://adventofcode.com/2024/day/2).
     import "prelude.eg"
 
     using System, OS, List
-
-    def input =
-        let L = read_line stdin in if eof stdin then {} else {L | input}
 
     def parse = 
         do Regex::matches (Regex::compile "mul\\([0-9]+,[0-9]+\\)|do(n't)?\\(\\)")
@@ -81,7 +72,7 @@ Advent of Code [day 2](https://adventofcode.com/2024/day/2).
         | false N X     -> (false, N) ] true 0
 
     def main =
-        input |> foldl (+) "" |> parse |> calc
+        read_lines stdin |> foldl (+) "" |> parse |> calc
 ```
 
 Advent of Code [day 3](https://adventofcode.com/2024/day/3).
@@ -103,7 +94,6 @@ Advent of Code [day 3](https://adventofcode.com/2024/day/3).
     def main =
         read_lines stdin |> map to_chars |> Dict::from_lists |> words |> map from_chars
         |> filter (flip elem {"MASMAS", "MASSAM", "SAMMAS", "SAMSAM"}) |> length
-
 ```
 
 Advent of Code [day 4](https://adventofcode.com/2024/day/4).
@@ -180,11 +170,11 @@ Advent of Code [day 6](https://adventofcode.com/2024/day/6).
     def parse = 
         do Regex::matches (Regex::compile "[0-9]+") |> map to_int
 
-    def conc =
+    def cat =
         [X Y -> to_int (to_text X + to_text Y)]
 
     def solutions =
-        foldl [{} X -> {X} |XX X -> map ((*) X) XX ++ map ((+) X) XX ++ map (flip conc X) XX] {}
+        [{X|XX} -> foldl [ZZ X -> flatmap [Z -> {Z*X, Z+X, cat Z X}] ZZ] {X} XX]
 
     def main =
         read_lines stdin |> map parse |> map [XX -> (head XX, solutions (tail XX))] 
