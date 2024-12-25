@@ -892,4 +892,36 @@ Advent of Code [day 25](https://adventofcode.com/2024/day/25).
     totals -  638 4165 21789
 ```
 
+## Lines of code, and token count
+
+```
+    day  1 -    6    74
+    day  2 -   11   121
+    day  3 -   12   105
+    day  4 -    6   122
+    day  5 -    8   149
+    day  6 -   18   373
+    day  7 -    9   132
+    day  8 -   15   201
+    day  9 -   15   345
+    day 10 -    8   151
+    day 11 -   10   135
+    day 12 -   20   328
+    day 13 -   11   191
+    day 14 -   16   322
+    day 15 -   21   565
+    day 16 -   36   665
+    day 17 -   20   580
+    day 18 -   24   453
+    day 19 -    9   161
+    day 20 -   15   372
+    day 21 -   23   516
+    day 22 -   15   304
+    day 23 -   20   298
+    day 24 -   28   654
+    totals -  376  7317
+
+    -- excluding import and using
+```
+
 Copyright 2024 Marco Devillers, MIT licence

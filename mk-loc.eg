@@ -1,0 +1,20 @@
+#!/usr/local/bin/egel
+
+import "prelude.eg"
+
+using System, OS, List
+
+def locs =
+    [D -> OS::exec ((format "cd day{:02};" D) + "grep -vE \'^\\s*($|#)\' task2.eg | grep -vE \'using|import\' | wc -l")
+          |> to_int]
+
+def tokens =
+    [D -> read_lines (open_in (format "day{:02}/task2.eg" D))
+    |> reduce [S0 S1 -> S0 +"\n" + S1] |> tokenize "" |> map [(X,Y,Z) -> (Y,Z)]
+    |> filter ((/=) "whitespace" . fst) 
+    |> filter ((/=) "comment" . fst) 
+    |> length]
+    
+def main =
+    [{D} -> let D = to_int D in printf "loc: {} tok: {}\n" (locs D) (tokens D)
+    |_ -> printf "usage: mk-loc n\n"] (tail (tail args))

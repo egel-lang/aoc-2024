@@ -1,0 +1,25 @@
+#!/usr/local/bin/egel
+
+# Various statistics tool. Take all stamps in directories holding
+# execution time and produce an histogram.
+
+import "prelude.eg"
+
+using System, List, OS, S = String
+
+def loc =
+    [D -> OS::exec (format "./mk-loc.eg {}" D)]
+
+def line =
+    [(D,(X,Y)) -> format "    day {:2} - {:>4} {:>5}\n" D X Y]
+
+def totals =
+    [(X,Y) -> format "    totals - {:>4} {:>5}" X Y]
+
+def main =
+    [{} -> map [D -> (D, loc D)] (from_to 1 24) 
+           |> map (proj_update 1 (Regex::matches (Regex::compile "[0-9]+")))
+           |> map (proj_update 1 [{X,Y} -> (to_int X,to_int Y)])
+           |> [LL -> map line LL ++ {totals (foldr add (0,0) (map snd LL))}]
+           |> reduce (+) |> [X -> print X]
+    |_ -> printf "usage: mk-locs.eg\n"] (tail (tail args))

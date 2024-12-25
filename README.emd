@@ -173,4 +173,12 @@
 {{OS::exec "./mk-wc.eg"}}
 ```
 
+## Lines of code, and token count
+
+```
+{{OS::exec "./mk-locs.eg"}}
+
+    -- excluding import and using
+```
+
 .hook [XX -> XX ++ {footer}]
