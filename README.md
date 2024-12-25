@@ -818,6 +818,29 @@ Marco Devillers
 
 [Day 24](https://adventofcode.com/2024/day/24)
 
+## Day 25
+
+```
+    # Advent of Code (AoC) - day 25, task 1
+
+    import "prelude.eg"
+
+    using System, OS, List, S = String, D = Dict
+
+    def heights =
+        do transpose |> map (flip (-) 1 . length . filter ((==) '#'))
+
+    def fit =
+        [(L,K) -> all (flip (<=) 5) (zip_with (+) L K)]
+
+    def main =
+        read_lines stdin |> map S::to_chars |> split_on {} |> split [XX -> all ((==) '#') (head XX)]
+        |> [(XX,YY) -> pairs (map heights XX) (map heights YY)]
+        |> filter fit |> length
+```
+
+[Day 25](https://adventofcode.com/2024/day/25)
+
 ## Running times
 
 ```
@@ -845,6 +868,7 @@ Marco Devillers
     day 22 -  2min | *********************
     day 23 -   53s | ******************
     day 24 - 929ms | *********
+    day 25 -    1s | **********
     -- every five stars is ten times bigger
 ```
 
