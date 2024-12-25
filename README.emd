@@ -2,7 +2,7 @@
 .using System;;
 .using List;;
 .egel def code = [S -> OS::read_lines (OS::open_in S) |> map ((+) "    ") |> [LL -> {"```"} ++ LL ++ {"```"}] |> reduce [S0 S1 -> S0 + "\n" + S1]];;
-.egel def aoc_day = [N -> "[Day " + to_text N + "](https://adventofcode.com/2024/day/" + to_text N + ")"];;
+.egel def aoc_day = [N -> "Advent of Code [day " + to_text N + "](https://adventofcode.com/2024/day/" + to_text N + ")."];;
 .def author = "Marco Devillers";;
 .def title = "Egel Solutions to Advent of Code 2024";;
 .def footer = "Copyright 2024 " + author + ", MIT licence";;

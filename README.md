@@ -23,7 +23,7 @@ Marco Devillers
         input |> map parse |> transpose |> tally |> map [(X,(Y,Z)) -> X*Y*Z] |> sum
 ```
 
-[Day 1](https://adventofcode.com/2024/day/1)
+Advent of Code [day 1](https://adventofcode.com/2024/day/1).
 
 ## Day 2 
 
@@ -53,7 +53,7 @@ Marco Devillers
               |> filter id |> length
 ```
 
-[Day 2](https://adventofcode.com/2024/day/2)
+Advent of Code [day 2](https://adventofcode.com/2024/day/2).
 
 ## Day 3 
 
@@ -84,7 +84,7 @@ Marco Devillers
         input |> foldl (+) "" |> parse |> calc
 ```
 
-[Day 3](https://adventofcode.com/2024/day/3)
+Advent of Code [day 3](https://adventofcode.com/2024/day/3).
 
 ## Day 4 
 
@@ -106,7 +106,7 @@ Marco Devillers
 
 ```
 
-[Day 4](https://adventofcode.com/2024/day/4)
+Advent of Code [day 4](https://adventofcode.com/2024/day/4).
 
 ## Day 5 
 
@@ -129,7 +129,7 @@ Marco Devillers
         |> map (join (nth . flip (/) 2 . length)) |> sum
 ```
 
-[Day 5](https://adventofcode.com/2024/day/5)
+Advent of Code [day 5](https://adventofcode.com/2024/day/5).
 
 ## Day 6 
 
@@ -166,7 +166,7 @@ Marco Devillers
 
 ```
 
-[Day 6](https://adventofcode.com/2024/day/6)
+Advent of Code [day 6](https://adventofcode.com/2024/day/6).
 
 ## Day 7 
 
@@ -191,7 +191,7 @@ Marco Devillers
         |> filter [(X,XX) -> (filter ((==) X) XX) /= {}] |> map fst |> sum
 ```
 
-[Day 7](https://adventofcode.com/2024/day/7)
+Advent of Code [day 7](https://adventofcode.com/2024/day/7).
 
 ## Day 8 
 
@@ -223,7 +223,7 @@ Marco Devillers
         |> length
 ```
 
-[Day 8](https://adventofcode.com/2024/day/8)
+Advent of Code [day 8](https://adventofcode.com/2024/day/8).
 
 ## Day 9 
 
@@ -256,7 +256,7 @@ Marco Devillers
 
 ```
 
-[Day 9](https://adventofcode.com/2024/day/9)
+Advent of Code [day 9](https://adventofcode.com/2024/day/9).
 
 ## Day 10 
 
@@ -281,7 +281,7 @@ Marco Devillers
 
 ```
 
-[Day 10](https://adventofcode.com/2024/day/10)
+Advent of Code [day 10](https://adventofcode.com/2024/day/10).
 
 ## Day 11 
 
@@ -306,7 +306,7 @@ Marco Devillers
 
 ```
 
-[Day 11](https://adventofcode.com/2024/day/11)
+Advent of Code [day 11](https://adventofcode.com/2024/day/11).
 
 ## Day 12 
 
@@ -345,7 +345,7 @@ Marco Devillers
         |> map [(PP0,PP1) -> (length PP0) * (length PP1)] |> sum
 ```
 
-[Day 12](https://adventofcode.com/2024/day/12)
+Advent of Code [day 12](https://adventofcode.com/2024/day/12).
 
 ## Day 13 
 
@@ -372,7 +372,7 @@ Marco Devillers
 
 ```
 
-[Day 13](https://adventofcode.com/2024/day/13)
+Advent of Code [day 13](https://adventofcode.com/2024/day/13).
 
 ## Day 14 
 
@@ -407,7 +407,7 @@ Marco Devillers
 
 ```
 
-[Day 14](https://adventofcode.com/2024/day/14)
+Advent of Code [day 14](https://adventofcode.com/2024/day/14).
 
 ## Day 15 
 
@@ -450,7 +450,7 @@ Marco Devillers
 
 ```
 
-[Day 15](https://adventofcode.com/2024/day/15)
+Advent of Code [day 15](https://adventofcode.com/2024/day/15).
 
 ## Day 16 
 
@@ -509,7 +509,7 @@ Marco Devillers
 
 ```
 
-[Day 16](https://adventofcode.com/2024/day/16)
+Advent of Code [day 16](https://adventofcode.com/2024/day/16).
 
 ## Day 17 
 
@@ -548,7 +548,7 @@ Marco Devillers
     def main = read_lines stdin |> parse |> [(RR,PP) -> find PP] |> minimum
 ```
 
-[Day 17](https://adventofcode.com/2024/day/17)
+Advent of Code [day 17](https://adventofcode.com/2024/day/17).
 
 ## Day 18 
 
@@ -592,7 +592,7 @@ Marco Devillers
         |> [BB -> board E BB |> graph |> [G -> search G (reachable G D::dict {S}) E (reverse BB)]]
 ```
 
-[Day 18](https://adventofcode.com/2024/day/18)
+Advent of Code [day 18](https://adventofcode.com/2024/day/18).
 
 ## Day 19 
 
@@ -617,7 +617,7 @@ Marco Devillers
 
 ```
 
-[Day 19](https://adventofcode.com/2024/day/19)
+Advent of Code [day 19](https://adventofcode.com/2024/day/19).
 
 ## Day 20 
 
@@ -654,7 +654,7 @@ Marco Devillers
 
 ```
 
-[Day 20](https://adventofcode.com/2024/day/20)
+Advent of Code [day 20](https://adventofcode.com/2024/day/20).
 
 ## Day 21 
 
@@ -696,7 +696,7 @@ Marco Devillers
 
 ```
 
-[Day 21](https://adventofcode.com/2024/day/21)
+Advent of Code [day 21](https://adventofcode.com/2024/day/21).
 
 ## Day 22 
 
@@ -730,7 +730,7 @@ Marco Devillers
 
 ```
 
-[Day 22](https://adventofcode.com/2024/day/22)
+Advent of Code [day 22](https://adventofcode.com/2024/day/22).
 
 ## Day 23 
 
@@ -768,7 +768,7 @@ Marco Devillers
 
 ```
 
-[Day 23](https://adventofcode.com/2024/day/23)
+Advent of Code [day 23](https://adventofcode.com/2024/day/23).
 
 ## Day 24
 
@@ -816,7 +816,7 @@ Marco Devillers
         |> assign D::dict |> flip swaps oracle |> valid
 ```
 
-[Day 24](https://adventofcode.com/2024/day/24)
+Advent of Code [day 24](https://adventofcode.com/2024/day/24).
 
 ## Day 25
 
@@ -839,7 +839,7 @@ Marco Devillers
         |> filter fit |> length
 ```
 
-[Day 25](https://adventofcode.com/2024/day/25)
+Advent of Code [day 25](https://adventofcode.com/2024/day/25).
 
 ## Running times
 
