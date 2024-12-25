@@ -173,7 +173,7 @@
 {{OS::exec "./mk-wc.eg"}}
 ```
 
-## Lines of code, and token count
+## Lines of code, token, and unique token count
 
 ```
 {{OS::exec "./mk-locs.eg"}}

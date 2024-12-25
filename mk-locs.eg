@@ -11,7 +11,7 @@ def loc =
     [D -> OS::exec (format "./mk-loc.eg {}" D)]
 
 def line =
-    [(D,(X,Y)) -> format "    day {:2} - {:>4} {:>5}\n" D X Y]
+    [(D,(X,Y,Z)) -> format "    day {:2} - {:>4} {:>5} {:>4}\n" D X Y Z]
 
 def totals =
     [(X,Y) -> format "    totals - {:>4} {:>5}" X Y]
@@ -19,7 +19,7 @@ def totals =
 def main =
     [{} -> map [D -> (D, loc D)] (from_to 1 24) 
            |> map (proj_update 1 (Regex::matches (Regex::compile "[0-9]+")))
-           |> map (proj_update 1 [{X,Y} -> (to_int X,to_int Y)])
-           |> [LL -> map line LL ++ {totals (foldr add (0,0) (map snd LL))}]
+           |> map (proj_update 1 [{X,Y,Z} -> (to_int X,to_int Y,to_int Z)])
+           |> [LL -> map line LL ++ {totals (foldr add (0,0) (map ([(X,Y,_) -> (X,Y)] . snd) LL))}]
            |> reduce (+) |> [X -> print X]
     |_ -> printf "usage: mk-locs.eg\n"] (tail (tail args))

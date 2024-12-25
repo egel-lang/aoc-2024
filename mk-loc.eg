@@ -15,6 +15,14 @@ def tokens =
     |> filter ((/=) "comment" . fst) 
     |> length]
     
+def unique_tokens =
+    [D -> read_lines (open_in (format "day{:02}/task2.eg" D))
+    |> reduce [S0 S1 -> S0 +"\n" + S1] |> tokenize "" |> map [(X,Y,Z) -> (Y,Z)]
+    |> filter ((/=) "whitespace" . fst) 
+    |> filter ((/=) "comment" . fst) 
+    |> map snd |> unique
+    |> length]
+
 def main =
-    [{D} -> let D = to_int D in printf "loc: {} tok: {}\n" (locs D) (tokens D)
+    [{D} -> let D = to_int D in printf "loc: {} tok: {} unique: {}\n" (locs D) (tokens D) (unique_tokens D)
     |_ -> printf "usage: mk-loc n\n"] (tail (tail args))
