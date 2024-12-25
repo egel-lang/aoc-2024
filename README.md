@@ -785,6 +785,9 @@ Marco Devillers
     def main = Py::eval cheat
 
     def cheat = """
+    # https://old.reddit.com/r/adventofcode/comments/1hl698z/2024_day_24_solutions/
+    # by unknown
+
     wires = {}
     operations = []
 
