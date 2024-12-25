@@ -773,10 +773,9 @@ Marco Devillers
 ## Day 24
 
 ```
-    # Advent of Code (AoC) - day 24, task 1
+    # Advent of Code (AoC) - day 24, task 2
 
     import "prelude.eg"
-
     using System, OS, List, S = String, D = Dict
 
     def xor = [A B -> and (or A B) (not (and A B))]
@@ -785,9 +784,7 @@ Marco Devillers
         foldl [D (X,OP,Y,Z) -> D::set D Z (X, OP, Y)|D (X,Y) -> D::set D X Y|D _ -> D]
 
     def eval0 =
-        [D Z -> 
-            let F = [A B -> D::set D A B; D] in
-            let G = [A -> D::get D A] in
+        [D Z -> let F = [A B -> D::set D A B; D] in let G = [A -> D::get D A] in
             [(X,"AND",Y) -> eval0 D X; eval0 D Y;F Z (and (G X) (G Y))
             |(X,"OR",Y) ->  eval0 D X; eval0 D Y;F Z (or (G X) (G Y))
             |(X,"XOR",Y) -> eval0 D X; eval0 D Y;F Z (xor (G X) (G Y))
@@ -799,11 +796,24 @@ Marco Devillers
     def num_out = [D N S -> if N < 0 then 0 else
             ([B -> if B then 1<<N else 0] (D::get D (format "{}{:02}" S N))) $ (num_out D (N - 1) S)]
 
+    def swap = [D A B -> let C = D::get D A in D::set D A (D::get D B);D::set D B C]
+    def swaps = [D P -> foldl [D (X,Y) -> swap D X Y] (D::copy D) P]
+
+    val test_cases = let RNG = [N -> ((N * 1103515245) + 12345) & ((1 << 32) - 1)] in
+        map [(X,Y) -> (RNG X, RNG Y)] (zip (from_to 501 600) (from_to 1201 1300))
+    def test = [D X Y -> let D = eval (assign (assign (Dict::copy D) (num_in 44 "x" X)) (num_in 44 "y" Y)) in
+                let X = num_out D 44 "x" in
+                let Y = num_out D 44 "y" in
+                let Z = num_out D 45 "z" in
+                printf "{} + {} = {}\n" X Y Z; (X + Y) == Z]
+    def tests = [D {} -> true |D {(X,Y)|RR} -> if test D X Y then tests D RR else false]
+    def valid = [D -> tests D test_cases]
+
+    def oracle = read_line (open_in "oracle.txt") |> S::split_pattern " " |> chunks 2 |> map list_to_tuple
+
     def main =
         read_lines stdin |> map (Regex::matches (Regex::compile "[a-zA-Z0-9]+")) |> map list_to_tuple
-        |> assign D::dict |> eval |> [D -> num_out D 45 'z']
-
-
+        |> assign D::dict |> flip swaps oracle |> valid
 ```
 
 [Day 24](https://adventofcode.com/2024/day/24)
@@ -834,7 +844,7 @@ Marco Devillers
     day 21 - 368ms | *******
     day 22 -  2min | *********************
     day 23 -   53s | ******************
-    day 24 - 146ms | *****
+    day 24 - 929ms | *********
     -- every five stars is ten times bigger
 ```
 
