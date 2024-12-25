@@ -1,4 +1,4 @@
-# Advent of Code (AoC) - day 24, task 1
+# Advent of Code (AoC) - day 25, task 1
 
 import "prelude.eg"
 
@@ -14,5 +14,3 @@ def main =
     read_lines stdin |> map S::to_chars |> split_on {} |> split [XX -> all ((==) '#') (head XX)]
     |> [(XX,YY) -> pairs (map heights XX) (map heights YY)]
     |> filter fit |> length
-
-
