@@ -4,9 +4,6 @@ import "prelude.eg"
 
 using System, OS, List
 
-def input =
-    let L = read_line stdin in if eof stdin then {} else {L | input}
-
 def parse = 
     do Regex::matches (Regex::compile "[0-9]+")  |> map to_int
 
@@ -19,5 +16,5 @@ def dampened =
     [ XX -> zip_with (++) (inits XX) (tail (tails XX)) ]
 
 def main =
-    input |> map parse |> map dampened |> map (any safe) 
+    read_lines stdin |> map parse |> map dampened |> map (any safe) 
           |> filter id |> length

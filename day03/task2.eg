@@ -4,9 +4,6 @@ import "prelude.eg"
 
 using System, OS, List
 
-def input =
-    let L = read_line stdin in if eof stdin then {} else {L | input}
-
 def parse = 
     do Regex::matches (Regex::compile "mul\\([0-9]+,[0-9]+\\)|do(n't)?\\(\\)")
 
@@ -21,4 +18,4 @@ def calc =
     | false N X     -> (false, N) ] true 0
     
 def main =
-    input |> foldl (+) "" |> parse |> calc
+    read_lines stdin |> foldl (+) "" |> parse |> calc

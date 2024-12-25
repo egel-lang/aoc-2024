@@ -12,4 +12,3 @@ def words =
 def main =
     read_lines stdin |> map to_chars |> Dict::from_lists |> words |> map from_chars
     |> filter (flip elem {"MASMAS", "MASSAM", "SAMMAS", "SAMSAM"}) |> length
-

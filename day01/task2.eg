@@ -3,9 +3,6 @@
 import "prelude.eg"
 using System, OS, List
 
-def input =
-    let L = read_line stdin in if eof stdin then {} else {L | input}
-
 def parse = 
     do Regex::matches (Regex::compile "[0-9]+") |> map to_int
 
@@ -13,4 +10,4 @@ def tally =
     do map Dict::count |> reduce Dict::inner_join |> Dict::to_list
 
 def main =
-    input |> map parse |> transpose |> tally |> map [(X,(Y,Z)) -> X*Y*Z] |> sum
+    read_lines stdin |> map parse |> transpose |> tally |> map [(X,(Y,Z)) -> X*Y*Z] |> sum
