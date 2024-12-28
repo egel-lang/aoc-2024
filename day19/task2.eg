@@ -2,10 +2,10 @@
 
 import "prelude.eg"
 
-using System, OS, List, String (starts_with, remove, count, split_pattern), D = Dict
+using System, OS, List, String (starts_with, remove, len=length, split_pattern), D = Dict
 
 def match =
-    [X Y -> if starts_with X Y then remove 0 (count X) Y else none]
+    [X Y -> if starts_with X Y then remove 0 (len X) Y else none]
 
 def solve =
     [XX _  D "" -> 1

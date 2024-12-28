@@ -2,7 +2,7 @@
 
 import "prelude.eg"
 
-using System, OS, List, String (len=count, sp=split, split_pattern), D = Dict
+using System, OS, List, String (len=length, sp=split_at, split_pattern), D = Dict
 
 def rule = 
     [0 -> {1}
